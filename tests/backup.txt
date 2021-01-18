@@ -111,12 +111,12 @@ int main() {
                         strcat(to_send_profile, token);
                         strcat(to_send_profile, "\n");
                         profile_feedback = send_data(to_send_profile);
-                        printf("%s\n", profile_feedback);
+                        //printf("%s\n", profile_feedback);
 
                         cJSON * root_profile = cJSON_Parse(profile_feedback);
                         cJSON * profile_message = cJSON_GetObjectItemCaseSensitive(root_profile, "message");
                         char * profile_message_rendered = cJSON_Print(profile_message);
-                        printf("\n%s\n", profile_message_rendered);
+                        //printf("\n%s\n", profile_message_rendered);
 
                         cJSON * root_username = cJSON_Parse(profile_message_rendered);
                         cJSON * profile_username = cJSON_GetObjectItemCaseSensitive(root_username, "username");
@@ -139,13 +139,46 @@ int main() {
                         cJSON * root_tweets_profile = cJSON_Parse(profile_message_rendered);
                         cJSON * profile_tweets = cJSON_GetObjectItemCaseSensitive(root_tweets_profile, "allTweets");
                         char * profile_tweets_rendered = cJSON_Print(profile_tweets);
+                        int number_of_tweets = cJSON_GetArraySize(profile_tweets);
 
 
                         printf("\nusername: %s\n", profile_username_rendered);
                         printf("\nbio: %s\n", profile_bio_rendered);
                         printf("\nfollowers: %s\n", profile_followers_rendered);
                         printf("\nfollowings: %s\n", profile_followings_rendered);
-                        printf("\nall tweets: %s\n", profile_tweets_rendered);
+                        //printf("\nall tweets: %s\n", profile_tweets_rendered);
+                        printf("\nnumber of  tweets: %d\n", number_of_tweets);
+                        printf("-------------------------------------------");
+
+                        for (int k = 0; k < number_of_tweets; k++) {
+                            cJSON * each_tweet = cJSON_GetArrayItem(profile_tweets, k);
+                            char * each_tweet_rendered = cJSON_Print(each_tweet);
+                            //printf("\ntweet %d is: %s\n", k, each_tweet_rendered);
+
+                            cJSON * root_tweets_id_profile = cJSON_Parse(each_tweet_rendered);
+                            cJSON * profile_tweets_id = cJSON_GetObjectItemCaseSensitive(root_tweets_id_profile, "id");
+                            char * profile_tweets_id_rendered = cJSON_Print(profile_tweets_id);
+
+                            cJSON * root_tweets_author_profile = cJSON_Parse(each_tweet_rendered);
+                            cJSON * profile_tweets_author = cJSON_GetObjectItemCaseSensitive(root_tweets_author_profile, "author");
+                            char * profile_tweets_author_rendered = cJSON_Print(profile_tweets_author);
+                            remove_doublequot(profile_tweets_author_rendered);
+
+                            cJSON * root_tweets_content_profile = cJSON_Parse(each_tweet_rendered);
+                            cJSON * profile_tweets_content = cJSON_GetObjectItemCaseSensitive(root_tweets_content_profile, "content");
+                            char * profile_tweets_content_rendered = cJSON_Print(profile_tweets_content);
+                            remove_doublequot(profile_tweets_content_rendered);
+
+                            cJSON * root_tweets_likes_profile = cJSON_Parse(each_tweet_rendered);
+                            cJSON * profile_tweets_likes = cJSON_GetObjectItemCaseSensitive(root_tweets_likes_profile, "likes");
+                            char * profile_tweets_likes_rendered = cJSON_Print(profile_tweets_likes);
+
+                            printf("\nid: %s\n", profile_tweets_id_rendered);
+                            printf("\nauthor: %s\n", profile_tweets_author_rendered);
+                            printf("\ncontent: %s\n", profile_tweets_content_rendered);
+                            printf("\nlikes: %s\n", profile_tweets_likes_rendered);
+                            printf("-------------------------------------------");
+                        }
 
                     }
 
@@ -232,6 +265,8 @@ int main() {
 
                     }
                 }
+            } else {
+                printf("\nyou are logged in or something went wrong.\n");
             }
 
         }
@@ -346,3 +381,4 @@ void print_timeline () {
 void print_Personal() {
     printf("\n1.set bio\n2.change password\n3.back\nplease enter the number of command :\n");
 }
+
