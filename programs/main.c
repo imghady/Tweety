@@ -412,6 +412,20 @@ int main() {
                             char * profile_tweets_content_rendered = cJSON_Print(profile_tweets_content);
                             remove_doublequot(profile_tweets_content_rendered);
 
+                            cJSON * root_tweets_comments_profile = cJSON_Parse(each_tweet_rendered);
+                            cJSON * profile_tweets_comments = cJSON_GetObjectItemCaseSensitive(root_tweets_comments_profile, "comments");
+                            char * profile_tweets_comments_rendered = cJSON_Print(profile_tweets_comments);
+
+                            int number_of_comments = cJSON_GetArraySize(profile_tweets_comments);
+                            //printf("\nn o c: %d", number_of_comments);
+                            for (int y = 0; y < number_of_comments; y++) {
+                                cJSON *each_comment = cJSON_GetArrayItem(profile_tweets_comments, y);
+                                char * each_comment_rendered = cJSON_Print(each_comment);
+                                //char  * each_comment_rendered_author = each_comment->string;
+                                printf("\nauthor of comment %d is: %s\n", y, each_comment->string);
+                                printf("\ncomment %d is: %s\n", y, each_comment_rendered);
+                            }
+
                             cJSON * root_tweets_likes_profile = cJSON_Parse(each_tweet_rendered);
                             cJSON * profile_tweets_likes = cJSON_GetObjectItemCaseSensitive(root_tweets_likes_profile, "likes");
                             char * profile_tweets_likes_rendered = cJSON_Print(profile_tweets_likes);
@@ -419,7 +433,9 @@ int main() {
                             printf("\ntweet id: %s\n", profile_tweets_id_rendered);
                             printf("\nauthor: %s\n", profile_tweets_author_rendered);
                             printf("\ntweet: %s\n", profile_tweets_content_rendered);
+                            //printf("\ncomments: %s\n", profile_tweets_comments_rendered);
                             printf("\nlikes: %s\n", profile_tweets_likes_rendered);
+                            printf("\nnumber of comments: %d\n", number_of_comments);
                             printf("-------------------------------------------");
                         }
 
