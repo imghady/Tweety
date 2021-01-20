@@ -1,1 +1,1 @@
-{"username":"user1","password":"1","bio":"user 1 bio","followers":[],"followings":[],"personalTweets":[1,2,3]}
+{"username":"user1","password":"1","bio":"user 1 bio","followers":["2","amirreza","4"],"followings":["4"],"personalTweets":[1,2,3,4]}
