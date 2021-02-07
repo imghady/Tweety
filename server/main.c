@@ -107,11 +107,24 @@ int main() {
                 signup_token2 = strtok(NULL, delim);
                 strcpy(signup_password, signup_token2);
 
+                cJSON *followers_field = NULL;
+                followers_field = cJSON_CreateArray();
+
+                cJSON *followings_field = NULL;
+                followings_field = cJSON_CreateArray();
+
+                cJSON *personalTweets_field = NULL;
+                personalTweets_field = cJSON_CreateArray();
+
+
                 printf("\n%s:%s\n", signup_username, signup_password);
 
                 cJSON_AddStringToObject(signup_root, "username", signup_username);
                 cJSON_AddStringToObject(signup_root, "password", signup_password);
                 cJSON_AddStringToObject(signup_root, "bio", "");
+                cJSON_AddItemToObject(signup_root, "followers", followers_field);
+                cJSON_AddItemToObject(signup_root, "followings", followings_field);
+                cJSON_AddItemToObject(signup_root, "personalTweets", personalTweets_field);
 
                 char *signup_string = cJSON_Print(signup_root);
                 char *response = calloc(1000, 1);
@@ -133,7 +146,7 @@ int main() {
                     response = "{\"type\":\"Successful\",\"message\":\"\"}";
                 }
 
-                sendData(&client_fd, &client, response);
+                int sent_status = sendData(&client_fd, &client, response);
 
             }
             else if (strcmp(command, "send") == 0) {
@@ -182,25 +195,6 @@ int main() {
             }
 
 
-
-            char *pbuf = buf;
-            do
-            {
-                int sent = send(client_fd, pbuf, read, 0);
-                if (sent == SOCKET_ERROR)
-                {
-                    err = WSAGetLastError();
-                    if ((err != WSAENOTCONN) && (err != WSAECONNABORTED) && (err == WSAECONNRESET))
-                        printf("Errore nella scrittura verso il client", &err);
-
-                    keepLooping = false;
-                    break;
-                }
-
-                pbuf += sent;
-                read -= sent;
-            }
-            while (read > 0);
             free(buf);
         }
         while (keepLooping);
@@ -215,7 +209,7 @@ int main() {
 int sendData(SOCKET *client_fd, struct sockaddr_in *client, char *response){
     unsigned long long resp_len = strlen(response);
 
-    while (1){
+    while (resp_len > 0){
         int sent = send(*client_fd, response, (int)resp_len, 0);
 
         if (sent == SOCKET_ERROR){
