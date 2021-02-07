@@ -10,6 +10,7 @@ struct sockaddr_in server;
 
 int initialize(int);
 char *sendToClient(char *);
+int sendData(SOCKET *, struct sockaddr_in *, char *);
 
 int main() {
     WSADATA wsadata;
@@ -113,14 +114,26 @@ int main() {
                 cJSON_AddStringToObject(signup_root, "bio", "");
 
                 char *signup_string = cJSON_Print(signup_root);
+                char *response = calloc(1000, 1);
 
-                FILE *user_file;
                 char file_name[1000];
                 sprintf(file_name, "Resources/Users/%s.user.json", signup_username);
-                printf("%s", file_name);
-                user_file = fopen(file_name, "w");
-                fprintf(user_file, "%s", signup_string);
-                fclose(user_file);
+
+                FILE *check_file_existence;
+                if ((check_file_existence = fopen(file_name, "r"))){
+                    fclose(check_file_existence);
+                    response = "{\"type\": \"Error\",\"message\":\"This user is already taken.\"}";
+                }
+                else {
+                    FILE *user_file;
+                    printf("%s", file_name);
+                    user_file = fopen(file_name, "w");
+                    fprintf(user_file, "%s", signup_string);
+                    fclose(user_file);
+                    response = "{\"type\":\"Successful\",\"message\":\"\"}";
+                }
+
+                sendData(&client_fd, &client, response);
 
             }
             else if (strcmp(command, "send") == 0) {
@@ -199,20 +212,17 @@ int main() {
     return 0;
 }
 
-char *send_data(char *data) {
-    char *buffer = malloc(1000);
-    memset(buffer, 0, 1000);
-    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (client_socket == INVALID_SOCKET) {
-        return buffer;
+int sendData(SOCKET *client_fd, struct sockaddr_in *client, char *response){
+    unsigned long long resp_len = strlen(response);
+
+    while (1){
+        int sent = send(*client_fd, response, (int)resp_len, 0);
+
+        if (sent == SOCKET_ERROR){
+            return -1;
+        }
+        response += sent;
+        resp_len -= sent;
     }
-    int can_connect = connect(client_socket, (struct sockaddr *) &server, sizeof(server));
-    if (can_connect != 0) {
-        printf("connection failed");
-        return buffer;
-    }
-    send(client_socket, data, strlen(data), 0);
-    recv(client_socket, buffer, 999, 0);
-    closesocket(client_socket);
-    return buffer;
+
 }
