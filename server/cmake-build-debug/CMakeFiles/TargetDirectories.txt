@@ -1,3 +1,3 @@
-C:/Users/1234/Desktop/project/server/cmake-build-debug/CMakeFiles/server.dir
-C:/Users/1234/Desktop/project/server/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/1234/Desktop/project/server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/amirali/Documents/GitHub/Tweety/server/cmake-build-debug/CMakeFiles/server.dir
+C:/Users/amirali/Documents/GitHub/Tweety/server/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/amirali/Documents/GitHub/Tweety/server/cmake-build-debug/CMakeFiles/rebuild_cache.dir

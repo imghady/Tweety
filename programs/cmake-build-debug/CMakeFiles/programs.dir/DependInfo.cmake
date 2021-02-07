@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "C:/Users/1234/Desktop/project/programs/cJSON.c" "C:/Users/1234/Desktop/project/programs/cmake-build-debug/CMakeFiles/programs.dir/cJSON.c.obj"
-  "C:/Users/1234/Desktop/project/programs/main.c" "C:/Users/1234/Desktop/project/programs/cmake-build-debug/CMakeFiles/programs.dir/main.c.obj"
+  "C:/Users/amirali/Documents/GitHub/Tweety/programs/cJSON.c" "C:/Users/amirali/Documents/GitHub/Tweety/programs/cmake-build-debug/CMakeFiles/programs.dir/cJSON.c.obj"
+  "C:/Users/amirali/Documents/GitHub/Tweety/programs/main.c" "C:/Users/amirali/Documents/GitHub/Tweety/programs/cmake-build-debug/CMakeFiles/programs.dir/main.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

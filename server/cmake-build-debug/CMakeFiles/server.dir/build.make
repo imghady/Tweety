@@ -62,10 +62,10 @@ RM = "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E rm
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\1234\Desktop\project\server
+CMAKE_SOURCE_DIR = C:\Users\amirali\Documents\GitHub\Tweety\server
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\1234\Desktop\project\server\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/server.dir/depend.make
@@ -78,29 +78,29 @@ include CMakeFiles/server.dir/flags.make
 
 CMakeFiles/server.dir/main.c.obj: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\1234\Desktop\project\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/server.dir/main.c.obj"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\server.dir\main.c.obj   -c C:\Users\1234\Desktop\project\server\main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/server.dir/main.c.obj"
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\server.dir\main.c.obj   -c C:\Users\amirali\Documents\GitHub\Tweety\server\main.c
 
 CMakeFiles/server.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/main.c.i"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\1234\Desktop\project\server\main.c > CMakeFiles\server.dir\main.c.i
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\amirali\Documents\GitHub\Tweety\server\main.c > CMakeFiles\server.dir\main.c.i
 
 CMakeFiles/server.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/main.c.s"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\1234\Desktop\project\server\main.c -o CMakeFiles\server.dir\main.c.s
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\amirali\Documents\GitHub\Tweety\server\main.c -o CMakeFiles\server.dir\main.c.s
 
 CMakeFiles/server.dir/cJSON.c.obj: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/cJSON.c.obj: ../cJSON.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\1234\Desktop\project\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/server.dir/cJSON.c.obj"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\server.dir\cJSON.c.obj   -c C:\Users\1234\Desktop\project\server\cJSON.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/server.dir/cJSON.c.obj"
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\server.dir\cJSON.c.obj   -c C:\Users\amirali\Documents\GitHub\Tweety\server\cJSON.c
 
 CMakeFiles/server.dir/cJSON.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/cJSON.c.i"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\1234\Desktop\project\server\cJSON.c > CMakeFiles\server.dir\cJSON.c.i
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\amirali\Documents\GitHub\Tweety\server\cJSON.c > CMakeFiles\server.dir\cJSON.c.i
 
 CMakeFiles/server.dir/cJSON.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/cJSON.c.s"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\1234\Desktop\project\server\cJSON.c -o CMakeFiles\server.dir\cJSON.c.s
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\amirali\Documents\GitHub\Tweety\server\cJSON.c -o CMakeFiles\server.dir\cJSON.c.s
 
 # Object files for target server
 server_OBJECTS = \
@@ -116,7 +116,7 @@ server.exe: CMakeFiles/server.dir/build.make
 server.exe: CMakeFiles/server.dir/linklibs.rsp
 server.exe: CMakeFiles/server.dir/objects1.rsp
 server.exe: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\1234\Desktop\project\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable server.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable server.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\server.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -129,6 +129,6 @@ CMakeFiles/server.dir/clean:
 .PHONY : CMakeFiles/server.dir/clean
 
 CMakeFiles/server.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\1234\Desktop\project\server C:\Users\1234\Desktop\project\server C:\Users\1234\Desktop\project\server\cmake-build-debug C:\Users\1234\Desktop\project\server\cmake-build-debug C:\Users\1234\Desktop\project\server\cmake-build-debug\CMakeFiles\server.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\amirali\Documents\GitHub\Tweety\server C:\Users\amirali\Documents\GitHub\Tweety\server C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug C:\Users\amirali\Documents\GitHub\Tweety\server\cmake-build-debug\CMakeFiles\server.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/server.dir/depend
 
