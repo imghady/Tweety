@@ -77,27 +77,41 @@ int main() {
             const char delim[2] = " ";
             char *token = strtok(arguments, delim);
             strcpy(command, token);
+
             if (strcmp(command, "login") == 0){
+                char login_username[1000];
+                char login_password[1000];
+                char *login_line = calloc(1000, 1);
+                strcpy(login_line, buf);
+                char *login_token2 = strtok(login_line, delim);
+                login_token2 = strtok(NULL, delim);
+                strcpy(login_username, login_token2);
+                login_username[strlen(login_username) - 1] = '\0';
+                login_token2 = strtok(NULL, delim);
+                strcpy(login_password, login_token2);
 
+                printf("\n%s:%s\n", login_username, login_password);
 
-            } else if (strcmp(command, "signup") == 0) {
+            }
+            else if (strcmp(command, "signup") == 0) {
                 cJSON *signup_root;
                 signup_root = cJSON_CreateObject();
                 char signup_username[1000];
                 char signup_password[1000];
-                char *line = calloc(1000, 1);
-                strcpy(line, buf);
-                char *token2 = strtok(line, delim);
-                token2 = strtok(NULL, delim);
-                strcpy(signup_username, token2);
+                char *signup_line = calloc(1000, 1);
+                strcpy(signup_line, buf);
+                char *signup_token2 = strtok(signup_line, delim);
+                signup_token2 = strtok(NULL, delim);
+                strcpy(signup_username, signup_token2);
                 signup_username[strlen(signup_username) - 1] = '\0';
-                token2 = strtok(NULL, delim);
-                strcpy(signup_password, token2);
+                signup_token2 = strtok(NULL, delim);
+                strcpy(signup_password, signup_token2);
 
                 printf("\n%s:%s\n", signup_username, signup_password);
 
                 cJSON_AddStringToObject(signup_root, "username", signup_username);
                 cJSON_AddStringToObject(signup_root, "password", signup_password);
+                cJSON_AddStringToObject(signup_root, "bio", "");
 
                 char *signup_string = cJSON_Print(signup_root);
                 char *response = calloc(1000, 1);
@@ -121,27 +135,49 @@ int main() {
 
                 sendData(&client_fd, &client, response);
 
-            } else if (strcmp(command, "send") == 0) {
+            }
+            else if (strcmp(command, "send") == 0) {
+                char tweet[1000];
 
-            } else if (strcmp(command, "refresh") == 0) {
+            }
+            else if (strcmp(command, "refresh") == 0) {
 
-            } else if (strcmp(command, "like") == 0) {
+            }
+            else if (strcmp(command, "like") == 0) {
 
-            } else if (strcmp(command, "comment") == 0) {
+            }
+            else if (strcmp(command, "comment") == 0) {
 
-            } else if (strcmp(command, "search") == 0) {
+            }
+            else if (strcmp(command, "search") == 0) {
 
-            } else if (strcmp(command, "follow") == 0) {
+            }
+            else if (strcmp(command, "follow") == 0) {
 
-            } else if (strcmp(command, "unfollow") == 0) {
+            }
+            else if (strcmp(command, "unfollow") == 0) {
 
-            } else if (strcmp(command, "set") == 0) {
+            }
+            else if (strcmp(command, "set") == 0) {
+                char bio[1000];
+                char bio_set[1000];
+                char *bio_line = calloc(1000, 1);
+                strcpy(bio_line, buf);
+                char *bio_token2 = strtok(bio_line, delim);
+                bio_token2 = strtok(NULL, delim);
+                strcpy(bio_set, bio_token2);
+                bio_set[strlen(bio_set) - 1] = '\0';
+                bio_token2 = strtok(NULL, delim);
+                strcpy(bio, bio_token2);
+                printf("\n%s\n", bio);
+            }
+            else if (strcmp(command, "logout") == 0) {
 
-            } else if (strcmp(command, "logout") == 0) {
+            }
+            else if (strcmp(command, "profile") == 0) {
 
-            } else if (strcmp(command, "profile") == 0) {
-
-            } else if (strcmp(command, "change") == 0) {
+            }
+            else if (strcmp(command, "change") == 0) {
 
             }
 
