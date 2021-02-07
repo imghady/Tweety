@@ -78,6 +78,8 @@ int main() {
             char *token = strtok(arguments, delim);
             strcpy(command, token);
 
+            buf[strlen(buf) - 1] = '\0';
+
             if (strcmp(command, "login") == 0){
                 char login_username[1000];
                 char login_password[1000];
@@ -89,6 +91,21 @@ int main() {
                 login_username[strlen(login_username) - 1] = '\0';
                 login_token2 = strtok(NULL, delim);
                 strcpy(login_password, login_token2);
+
+                char *response;
+
+                char file_name[1000];
+                sprintf(file_name, "Resources/Users/%s.user.json", login_username);
+
+                FILE *check_file_existence;
+                if ((check_file_existence = fopen(file_name, "r"))){
+                    
+                }
+                else {
+                    fclose(check_file_existence);
+                    response = "{\"type\": \"Error\",\"message\":\"Invalid username\"}";
+                }
+
 
                 printf("\n%s:%s\n", login_username, login_password);
 
