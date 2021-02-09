@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/amirali/Documents/GitHub/Tweety/programs/cJSON.c
+C:/Users/1234/Desktop/Tweety/programs/cJSON.c
 string.h
 -
 stdio.h
@@ -24,13 +24,13 @@ float.h
 locale.h
 -
 cJSON.h
-C:/Users/amirali/Documents/GitHub/Tweety/programs/cJSON.h
+C:/Users/1234/Desktop/Tweety/programs/cJSON.h
 
-C:/Users/amirali/Documents/GitHub/Tweety/programs/cJSON.h
+C:/Users/1234/Desktop/Tweety/programs/cJSON.h
 stddef.h
 -
 
-C:/Users/amirali/Documents/GitHub/Tweety/programs/main.c
+C:/Users/1234/Desktop/Tweety/programs/main.c
 stdio.h
 -
 winsock2.h
@@ -38,5 +38,5 @@ winsock2.h
 string.h
 -
 cJSON.h
-C:/Users/amirali/Documents/GitHub/Tweety/programs/cJSON.h
+C:/Users/1234/Desktop/Tweety/programs/cJSON.h
 

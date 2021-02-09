@@ -62,10 +62,10 @@ RM = "C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -E rm
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\amirali\Documents\GitHub\Tweety\programs
+CMAKE_SOURCE_DIR = C:\Users\1234\Desktop\Tweety\programs
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/programs.dir/depend.make
@@ -78,29 +78,29 @@ include CMakeFiles/programs.dir/flags.make
 
 CMakeFiles/programs.dir/main.c.obj: CMakeFiles/programs.dir/flags.make
 CMakeFiles/programs.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/programs.dir/main.c.obj"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\programs.dir\main.c.obj   -c C:\Users\amirali\Documents\GitHub\Tweety\programs\main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/programs.dir/main.c.obj"
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\programs.dir\main.c.obj   -c C:\Users\1234\Desktop\Tweety\programs\main.c
 
 CMakeFiles/programs.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/programs.dir/main.c.i"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\amirali\Documents\GitHub\Tweety\programs\main.c > CMakeFiles\programs.dir\main.c.i
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\1234\Desktop\Tweety\programs\main.c > CMakeFiles\programs.dir\main.c.i
 
 CMakeFiles/programs.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/programs.dir/main.c.s"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\amirali\Documents\GitHub\Tweety\programs\main.c -o CMakeFiles\programs.dir\main.c.s
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\1234\Desktop\Tweety\programs\main.c -o CMakeFiles\programs.dir\main.c.s
 
 CMakeFiles/programs.dir/cJSON.c.obj: CMakeFiles/programs.dir/flags.make
 CMakeFiles/programs.dir/cJSON.c.obj: ../cJSON.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/programs.dir/cJSON.c.obj"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\programs.dir\cJSON.c.obj   -c C:\Users\amirali\Documents\GitHub\Tweety\programs\cJSON.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/programs.dir/cJSON.c.obj"
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\programs.dir\cJSON.c.obj   -c C:\Users\1234\Desktop\Tweety\programs\cJSON.c
 
 CMakeFiles/programs.dir/cJSON.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/programs.dir/cJSON.c.i"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\amirali\Documents\GitHub\Tweety\programs\cJSON.c > CMakeFiles\programs.dir\cJSON.c.i
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\1234\Desktop\Tweety\programs\cJSON.c > CMakeFiles\programs.dir\cJSON.c.i
 
 CMakeFiles/programs.dir/cJSON.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/programs.dir/cJSON.c.s"
-	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\amirali\Documents\GitHub\Tweety\programs\cJSON.c -o CMakeFiles\programs.dir\cJSON.c.s
+	C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\1234\Desktop\Tweety\programs\cJSON.c -o CMakeFiles\programs.dir\cJSON.c.s
 
 # Object files for target programs
 programs_OBJECTS = \
@@ -116,7 +116,7 @@ programs.exe: CMakeFiles/programs.dir/build.make
 programs.exe: CMakeFiles/programs.dir/linklibs.rsp
 programs.exe: CMakeFiles/programs.dir/objects1.rsp
 programs.exe: CMakeFiles/programs.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable programs.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable programs.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\programs.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -129,6 +129,6 @@ CMakeFiles/programs.dir/clean:
 .PHONY : CMakeFiles/programs.dir/clean
 
 CMakeFiles/programs.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\amirali\Documents\GitHub\Tweety\programs C:\Users\amirali\Documents\GitHub\Tweety\programs C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug C:\Users\amirali\Documents\GitHub\Tweety\programs\cmake-build-debug\CMakeFiles\programs.dir\DependInfo.cmake --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\1234\Desktop\Tweety\programs C:\Users\1234\Desktop\Tweety\programs C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug C:\Users\1234\Desktop\Tweety\programs\cmake-build-debug\CMakeFiles\programs.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/programs.dir/depend
 

@@ -3,6 +3,8 @@
 #include <string.h>
 #include "cJSON.h"
 #include <stdbool.h>
+#include <assert.h>
+#include <stdlib.h>
 #define PORT 12345
 #define BUFFER_SIZE 1024
 
@@ -11,6 +13,19 @@ struct sockaddr_in server;
 int initialize(int);
 char *sendToClient(char *);
 int sendData(SOCKET *, struct sockaddr_in *, char *);
+void remove_doublequot (char * input);
+void rand_str(char *, size_t);
+void add_new_login(char *, char *);
+void delete_login(char *);
+char * get_user_by_token(char *);
+void print_logins();
+
+struct Login {
+    char username[1000];
+    char token[1010];
+    struct Login * next;
+};
+struct Login *head = NULL;
 
 int main() {
     WSADATA wsadata;
@@ -69,7 +84,7 @@ int main() {
                     printf("Error nella lettura dal client", &err);
                 break;
             }
-            printf("%s\n", buf);
+            printf("command is: %s\n", buf);
 
             strcpy(arguments, buf);
 
@@ -92,22 +107,58 @@ int main() {
                 login_token2 = strtok(NULL, delim);
                 strcpy(login_password, login_token2);
 
-                char *response;
+                char *login_response = calloc(1000, 1);
 
                 char file_name[1000];
                 sprintf(file_name, "Resources/Users/%s.user.json", login_username);
 
-                FILE *check_file_existence;
-                if ((check_file_existence = fopen(file_name, "r"))){
-                    
+                FILE *login_check_file_existence;
+                if ((login_check_file_existence = fopen(file_name, "r"))){
+                    char user_file_content[10000];
+                    char user_object[10000] = {'\0'};
+
+                    while (fgets(user_file_content, 10000, login_check_file_existence) != NULL)
+                        strcat(user_object, user_file_content);
+
+                    printf("user object is: x%s", user_object);
+
+                    cJSON * user_data = cJSON_Parse(user_object);
+                    cJSON * real_password = cJSON_GetObjectItemCaseSensitive(user_data, "password");
+                    char * real_password_rendered = cJSON_Print(real_password);
+
+                    remove_doublequot(real_password_rendered);
+
+                    printf("\nrendered password: %s\n", real_password_rendered);
+
+                    if (strcmp(real_password_rendered, login_password) == 0) {
+                        char *res_token = calloc(100, 1);
+                        char random_string[10];
+                        strcpy(res_token, login_username);
+                        rand_str(random_string, 10);
+                        strcat(res_token, random_string);
+
+                        printf("token for this login: %s\n", res_token);
+
+                        add_new_login(login_username, res_token);
+                        print_logins();
+                        sprintf(login_response, "{\"type\":\"Token\",\"message\":\"%s\"}", res_token);
+                    }
+                    else {
+                        login_response = "{\"type\":\"Error\",\"message\":\"Incorrect password\"}";
+                    }
+
+                    user_file_content[0] = '\0';
+                    user_object[0] = '\0';
+
+                    fclose(login_check_file_existence);
                 }
                 else {
-                    fclose(check_file_existence);
-                    response = "{\"type\": \"Error\",\"message\":\"Invalid username\"}";
+                    fclose(login_check_file_existence);
+                    login_response = "{\"type\":\"Error\",\"message\":\"Invalid username\"}";
                 }
 
 
-                printf("\n%s:%s\n", login_username, login_password);
+                int sent_status = sendData(&client_fd, &client, login_response);
 
             }
             else if (strcmp(command, "signup") == 0) {
@@ -123,6 +174,7 @@ int main() {
                 signup_username[strlen(signup_username) - 1] = '\0';
                 signup_token2 = strtok(NULL, delim);
                 strcpy(signup_password, signup_token2);
+                signup_password[strlen(signup_password)] = '\0';
 
                 cJSON *followers_field = NULL;
                 followers_field = cJSON_CreateArray();
@@ -139,31 +191,32 @@ int main() {
                 cJSON_AddStringToObject(signup_root, "username", signup_username);
                 cJSON_AddStringToObject(signup_root, "password", signup_password);
                 cJSON_AddStringToObject(signup_root, "bio", "");
+
                 cJSON_AddItemToObject(signup_root, "followers", followers_field);
                 cJSON_AddItemToObject(signup_root, "followings", followings_field);
                 cJSON_AddItemToObject(signup_root, "personalTweets", personalTweets_field);
 
                 char *signup_string = cJSON_Print(signup_root);
-                char *response = calloc(1000, 1);
+                char *signup_response = calloc(1000, 1);
 
-                char file_name[1000];
-                sprintf(file_name, "Resources/Users/%s.user.json", signup_username);
+                char signup_file_name[1000];
+                sprintf(signup_file_name, "Resources/Users/%s.user.json", signup_username);
 
-                FILE *check_file_existence;
-                if ((check_file_existence = fopen(file_name, "r"))){
-                    fclose(check_file_existence);
-                    response = "{\"type\": \"Error\",\"message\":\"This user is already taken.\"}";
+                FILE *signup_check_file_existence;
+                if ((signup_check_file_existence = fopen(signup_file_name, "r"))){
+                    fclose(signup_check_file_existence);
+                    signup_response = "{\"type\": \"Error\",\"message\":\"This user is already taken.\"}";
                 }
                 else {
                     FILE *user_file;
-                    printf("%s", file_name);
-                    user_file = fopen(file_name, "w");
+                    printf("\n%s\n", signup_file_name);
+                    user_file = fopen(signup_file_name, "w");
                     fprintf(user_file, "%s", signup_string);
                     fclose(user_file);
-                    response = "{\"type\":\"Successful\",\"message\":\"\"}";
+                    signup_response = "{\"type\":\"Successful\",\"message\":\"\"}";
                 }
 
-                int sent_status = sendData(&client_fd, &client, response);
+                int sent_status = sendData(&client_fd, &client, signup_response);
 
             }
             else if (strcmp(command, "send") == 0) {
@@ -189,20 +242,67 @@ int main() {
 
             }
             else if (strcmp(command, "set") == 0) {
-                char bio[1000];
-                char bio_set[1000];
+                char bio[1000] = {'\0'};
+                char user_token[1000] = {'\0'};
                 char *bio_line = calloc(1000, 1);
                 strcpy(bio_line, buf);
                 char *bio_token2 = strtok(bio_line, delim);
                 bio_token2 = strtok(NULL, delim);
-                strcpy(bio_set, bio_token2);
-                bio_set[strlen(bio_set) - 1] = '\0';
                 bio_token2 = strtok(NULL, delim);
-                strcpy(bio, bio_token2);
-                printf("\n%s\n", bio);
+                strcpy(user_token, bio_token2);
+                user_token[strlen(user_token) - 1] = '\0';
+                printf("\ntoken: %s", user_token);
+                while(bio_token2 != NULL){
+                    bio_token2 = strtok(NULL, delim);
+                    if (bio_token2 == NULL){
+                        break;
+                    }
+                    strcat(bio, bio_token2);
+                    strcat(bio, " ");
+                }
+                bio[strlen(bio) - 1] = '\0';
+                printf("\nbio: %s\n", bio);
+
+                char *this_user = get_user_by_token(user_token);
+
+                printf("%s\n", this_user);
+
+                char file_name[1000];
+                sprintf(file_name, "Resources/Users/%s.user.json", this_user);
+
+                FILE *fp = fopen(file_name, "r");
+                char user_file_content[10000];
+                char user_object[10000] = {'\0'};
+
+                while (fgets(user_file_content, 10000, fp) != NULL)
+                    strcat(user_object, user_file_content);
+
+                fclose(fp);
+
+                cJSON * user_data = cJSON_Parse(user_object);
+                cJSON_SetValuestring(cJSON_GetObjectItem(user_data, "bio"), bio);
+                char *signup_string = cJSON_Print(user_data);
+                FILE *user_file;
+                user_file = fopen(file_name, "w");
+                fprintf(user_file, "%s", signup_string);
+                fclose(user_file);
+
+                char *logout_response = "{\"type\": \"Successful\",\"message\":\"\"}";
+                int sent_status = sendData(&client_fd, &client, logout_response);
+
             }
             else if (strcmp(command, "logout") == 0) {
-
+                char user_token[1010];
+                char *login_line = calloc(1017, 1);
+                strcpy(login_line, buf);
+                char *login_token2 = strtok(login_line, delim);
+                login_token2 = strtok(NULL, delim);
+                strcpy(user_token, login_token2);
+                printf("\n%s\n", user_token);
+                delete_login(user_token);
+                print_logins();
+                char *logout_response = "{\"type\": \"Successful\",\"message\":\"\"}";
+                int sent_status = sendData(&client_fd, &client, logout_response);
             }
             else if (strcmp(command, "profile") == 0) {
 
@@ -236,4 +336,84 @@ int sendData(SOCKET *client_fd, struct sockaddr_in *client, char *response){
         resp_len -= sent;
     }
 
+}
+
+void remove_doublequot (char * input) {
+    int i = 0;
+    while (*(input + i) != NULL){
+        *(input + i) = *(input + i + 1);
+        i++;
+    }
+    *(input + i - 2) = '\0';
+}
+
+void rand_str(char *dest, size_t length) {
+    char charset[] = "0123456789"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    while (length-- > 0) {
+
+        size_t index = (double) rand() / RAND_MAX * (sizeof charset - 1);
+        *dest++ = charset[index];
+    }
+    *dest = '\0';
+}
+
+void add_new_login(char *username, char *token) {
+    struct Login *link = (struct Login *) malloc(sizeof(struct Login));
+    strcpy(link->username, username);
+    strcpy(link->token, token);
+    link->next = head;
+    head = link;
+}
+
+void delete_login(char *token) {
+    struct Login *current = head;
+    struct Login *previous = NULL;
+    while (strcmp(current->token, token) != 0) {
+        if (current->next == NULL) {
+            break;
+        } else {
+            previous = current;
+            current = current->next;
+        }
+    }
+    if (current == head) {
+        head = head->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    free(current);
+}
+
+char * get_user_by_token(char *token) {
+    struct Login *current = head;
+    if (head == NULL) {
+        return NULL;
+    }
+
+    while (strcmp(current->token, token) != 0) {
+        if (current->next == NULL) {
+            break;
+        } else {
+            current = current->next;
+        }
+    }
+
+    if (strcmp(current->token, token) == 0){
+        return current->username;
+    }
+    else {
+        return NULL;
+    }
+}
+
+void print_logins(){
+    struct Login *ptr = head;
+    while (ptr != NULL) {
+        printf("%s:%s\n", ptr->username, ptr->token);
+        ptr = ptr->next;
+    }
 }
