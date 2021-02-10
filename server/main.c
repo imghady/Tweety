@@ -220,7 +220,91 @@ int main() {
 
             }
             else if (strcmp(command, "send") == 0) {
-                char tweet[1000];
+                char tweet[1000] = {'\0'};
+                char user_token[1000] = {'\0'};
+                char *tweet_line = calloc(1000, 1);
+                strcpy(tweet_line, buf);
+                char *bio_token2 = strtok(tweet_line, delim);
+                bio_token2 = strtok(NULL, delim);
+                bio_token2 = strtok(NULL, delim);
+                strcpy(user_token, bio_token2);
+                user_token[strlen(user_token) - 1] = '\0';
+                printf("\ntoken: %s", user_token);
+                while(bio_token2 != NULL){
+                    bio_token2 = strtok(NULL, delim);
+                    if (bio_token2 == NULL){
+                        break;
+                    }
+                    strcat(tweet, bio_token2);
+                    strcat(tweet, " ");
+                }
+                tweet[strlen(tweet) - 1] = '\0';
+                printf("\ntweet: %s\n", tweet);
+
+                char *last_tweet_filename = "Resources/last_tweet_number.txt";
+
+                FILE *ltn = fopen(last_tweet_filename, "r");
+                int last_tweet_number;
+                fscanf(ltn, "%d", &last_tweet_number);
+                fclose(ltn);
+
+                int this_tweet_id = last_tweet_number + 1;
+
+                char *this_user = get_user_by_token(user_token);
+
+                printf("%s\n", this_user);
+
+                char file_name[1000];
+                sprintf(file_name, "Resources/Users/%s.user.json", this_user);
+
+                char tweet_file_name[1000];
+                sprintf(tweet_file_name, "Resources/Tweets/%d.tweet.json", this_tweet_id);
+
+                cJSON *tweet_root;
+                tweet_root = cJSON_CreateObject();
+
+                cJSON_AddNumberToObject(tweet_root, "id", this_tweet_id);
+                cJSON_AddStringToObject(tweet_root, "author", this_user);
+                cJSON_AddStringToObject(tweet_root, "content", tweet);
+                cJSON * comments = cJSON_CreateObject();
+                cJSON_AddItemToObject(tweet_root, "comments", comments);
+                cJSON_AddNumberToObject(tweet_root, "like", 0);
+
+                printf("\n\n\n%s\n", cJSON_Print(tweet_root));
+
+                char *tweet_string = cJSON_Print(tweet_root);
+                FILE *tweet_file;
+                tweet_file = fopen(tweet_file_name, "w");
+                fprintf(tweet_file, "%s", tweet_string);
+                fclose(tweet_file);
+
+
+
+                FILE *fp = fopen(file_name, "r");
+                char user_file_content[10000];
+                char user_object[10000] = {'\0'};
+
+                while (fgets(user_file_content, 10000, fp) != NULL)
+                    strcat(user_object, user_file_content);
+
+                fclose(fp);
+
+                cJSON * user_data = cJSON_Parse(user_object);
+                cJSON * tweet_id = cJSON_CreateNumber(this_tweet_id);
+                cJSON_AddItemToArray(cJSON_GetObjectItem(user_data, "personalTweets"), tweet_id);
+                char *user_string = cJSON_Print(user_data);
+                FILE *user_file;
+                user_file = fopen(file_name, "w");
+                fprintf(user_file, "%s", user_string);
+                fclose(user_file);
+
+                FILE *last_tweet_file;
+                last_tweet_file = fopen(last_tweet_filename, "w");
+                fprintf(last_tweet_file, "%d", this_tweet_id);
+                fclose(last_tweet_file);
+
+                char *new_tweet_response = "{\"type\": \"Successful\",\"message\":\"\"}";
+                int sent_status = sendData(&client_fd, &client, new_tweet_response);
 
             }
             else if (strcmp(command, "refresh") == 0) {
@@ -323,7 +407,7 @@ int main() {
     return 0;
 }
 
-int sendData(SOCKET *client_fd, struct sockaddr_in *client, char *response){
+int sendData(SOCKET *client_fd, struct sockaddr_in *client, char *response) {
     unsigned long long resp_len = strlen(response);
 
     while (resp_len > 0){
@@ -410,7 +494,7 @@ char * get_user_by_token(char *token) {
     }
 }
 
-void print_logins(){
+void print_logins() {
     struct Login *ptr = head;
     while (ptr != NULL) {
         printf("%s:%s\n", ptr->username, ptr->token);
