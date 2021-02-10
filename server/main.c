@@ -606,7 +606,57 @@ int main() {
                 }
             }
             else if (strcmp(command, "change") == 0) {
+                char user_token[1000];
+                char current_password[1000];
+                char new_password[1000];
+                char *chnage_passsword_line = calloc(1000, 1);
+                strcpy(chnage_passsword_line, buf);
+                char *change_token = strtok(chnage_passsword_line, delim);
+                change_token = strtok(NULL, delim);
+                change_token = strtok(NULL, delim);
+                strcpy(user_token, change_token);
+                user_token[strlen(user_token) - 1] = '\0';
+                change_token = strtok(NULL, delim);
+                strcpy(current_password, change_token);
+                current_password[strlen(current_password) - 1] = '\0';
+                change_token = strtok(NULL, delim);
+                strcpy(new_password, change_token);
+                new_password[strlen(new_password)] = '\0';
 
+                char *this_user_file_name = calloc(100, 1);
+                char *this_user = get_user_by_token(user_token);
+                sprintf(this_user_file_name, "Resources/Users/%s.user.json", this_user);
+
+                FILE *fp = fopen(this_user_file_name, "r");
+
+                char user_file_content[10000];
+                char user_object[10000] = {'\0'};
+
+                while (fgets(user_file_content, 10000, fp) != NULL) {
+                    strcat(user_object, user_file_content);
+                }
+
+                fclose(fp);
+
+                cJSON *user_data = cJSON_Parse(user_object);
+                cJSON *this_password_obj = cJSON_GetObjectItem(user_data, "password");
+                char *this_password = cJSON_GetStringValue(this_password_obj);
+
+                if (strcmp(this_password, current_password) == 0) {
+                    cJSON_SetValuestring(this_password_obj, new_password);
+                    char *user_string = cJSON_Print(user_data);
+                    FILE *user_file;
+                    user_file = fopen(this_user_file_name, "w");
+                    fprintf(user_file, "%s", user_string);
+                    fclose(user_file);
+
+                    char *change_response = "{\"type\": \"Successful\",\"message\":\"Password has changed successfully\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                }
+                else {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Current password is incorrect.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                }
             }
 
 
