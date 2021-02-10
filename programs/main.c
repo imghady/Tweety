@@ -270,7 +270,7 @@ int main() {
                         strcat(to_send_search, search_username);
                         strcat(to_send_search, "\n");
                         search_feedback = send_data(to_send_search);
-                        //printf("%s\n", search_feedback);
+                        printf("%s\n", search_feedback);
 
                         cJSON * root_search = cJSON_Parse(search_feedback);
                         cJSON * search_type = cJSON_GetObjectItemCaseSensitive(root_search, "type");

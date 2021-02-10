@@ -19,6 +19,7 @@ void add_new_login(char *, char *);
 void delete_login(char *);
 char * get_user_by_token(char *);
 void print_logins();
+void removeChar(char*, char);
 
 struct Login {
     char username[1000];
@@ -268,7 +269,7 @@ int main() {
                 cJSON_AddStringToObject(tweet_root, "content", tweet);
                 cJSON * comments = cJSON_CreateObject();
                 cJSON_AddItemToObject(tweet_root, "comments", comments);
-                cJSON_AddNumberToObject(tweet_root, "like", 0);
+                cJSON_AddNumberToObject(tweet_root, "likes", 0);
 
                 printf("\n\n\n%s\n", cJSON_Print(tweet_root));
 
@@ -312,11 +313,144 @@ int main() {
             }
             else if (strcmp(command, "like") == 0) {
 
+
+//                char *this_user = get_user_by_token(user_token);
+//
+//
+//                char *tweet_file = calloc(10, 1);
+//                sprintf(tweet_file, "Resources/Tweets/%s.tweet.json", tweet_id);
+//
+//
+//                FILE *fp = fopen(tweet_file, "r");
+//                char user_file_content[10000];
+//                char user_object[10000] = {'\0'};
+//
+//                while (fgets(user_file_content, 10000, fp) != NULL)
+//                    strcat(user_object, user_file_content);
+//
+//                fclose(fp);
+//
+//                cJSON * tweet_data = cJSON_Parse(user_object);
+//                cJSON * likes_value = cJSON_GetObjectItem(tweet_data, "likes");
+//                int likes = (int)cJSON_GetNumberValue(likes_value);
+//                likes++;
+//                printf("%d", likes);
+//                char *tweet_string = cJSON_Print(tweet_data);
+//                FILE *user_file;
+//                user_file = fopen(file_name, "w");
+//                fprintf(user_file, "%s", user_string);
+//                fclose(user_file);
+
             }
             else if (strcmp(command, "comment") == 0) {
 
             }
             else if (strcmp(command, "search") == 0) {
+                char search_user_token[1000];
+                char username_for_search[1000];
+                char *signup_line = calloc(1000, 1);
+                strcpy(signup_line, buf);
+                char *signup_token2 = strtok(signup_line, delim);
+                signup_token2 = strtok(NULL, delim);
+                strcpy(search_user_token, signup_token2);
+                search_user_token[strlen(search_user_token) - 1] = '\0';
+                signup_token2 = strtok(NULL, delim);
+                strcpy(username_for_search, signup_token2);
+                username_for_search[strlen(username_for_search)] = '\0';
+
+                printf("\ntoken: %s\nusername: %s\n", search_user_token, username_for_search);
+
+                char *searched_user_file_name = calloc(100, 1);
+                sprintf(searched_user_file_name, "Resources/Users/%s.user.json", username_for_search);
+
+                FILE *fp = fopen(searched_user_file_name, "r");
+
+                if (fp != NULL) {
+                    char user_file_content[10000];
+                    char user_object[10000] = {'\0'};
+
+                    while (fgets(user_file_content, 10000, fp) != NULL) {
+                        strcat(user_object, user_file_content);
+                    }
+
+                    fclose(fp);
+
+                    cJSON *user_data = cJSON_Parse(user_object);
+
+
+                    cJSON *response_message = cJSON_CreateObject();
+
+                    cJSON *searched_username_object = cJSON_GetObjectItemCaseSensitive(user_data, "username");
+                    char *searched_username = cJSON_GetStringValue(searched_username_object);
+                    cJSON_AddStringToObject(response_message, "username", searched_username);
+
+                    cJSON *searched_bio_object = cJSON_GetObjectItemCaseSensitive(user_data, "bio");
+                    char *searched_bio = cJSON_GetStringValue(searched_bio_object);
+                    cJSON_AddStringToObject(response_message, "bio", searched_bio);
+
+                    cJSON * followers_list = cJSON_GetObjectItem(user_data, "followers");
+                    cJSON_AddNumberToObject(response_message, "numberOfFollowers", cJSON_GetArraySize(followers_list));
+
+                    cJSON * followings_list = cJSON_GetObjectItem(user_data, "followings");
+                    cJSON_AddNumberToObject(response_message, "numberOfFollowings", cJSON_GetArraySize(followings_list));
+
+                    int i, follow_status = 0;
+                    char *this_user = get_user_by_token(search_user_token);
+                    for (i = 0; i < cJSON_GetArraySize(followers_list); i++) {
+                        cJSON *follower = cJSON_GetArrayItem(followers_list, i);
+                        char * follower_username = cJSON_GetStringValue(follower);
+                        if (strcmp(follower_username, this_user) == 0) {
+                            follow_status = 1;
+                        }
+                    }
+
+                    if (follow_status) {
+                        cJSON_AddStringToObject(response_message, "followStatus", "Followed");
+                    }
+                    else {
+                        cJSON_AddStringToObject(response_message, "followStatus", "NotFollowed");
+                    }
+
+
+
+
+                    cJSON *personal_tweets_ids = cJSON_GetObjectItem(user_data, "personalTweets");
+
+                    cJSON *personal_tweets = cJSON_CreateArray();
+
+                    for (i = 0; i < cJSON_GetArraySize(personal_tweets_ids); i++) {
+                        cJSON *subitem = cJSON_GetArrayItem(personal_tweets_ids, i);
+                        int tweet_id = (int) cJSON_GetNumberValue(subitem);
+                        char *this_tweet_filename = calloc(100, 1);
+                        sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
+                        FILE *this_tweet_file = fopen(this_tweet_filename, "r");
+                        char temp[10000];
+                        char tweet_content[10000] = {'\0'};
+                        while (fgets(temp, 10000, this_tweet_file) != NULL) {
+                            strcat(tweet_content, temp);
+                        }
+                        fclose(fp);
+
+                        cJSON *this_tweet = cJSON_Parse(tweet_content);
+
+                        cJSON_AddItemToArray(personal_tweets, this_tweet);
+
+                    }
+
+                    cJSON_AddItemToObject(response_message, "allTweets", personal_tweets);
+
+                    char *response_message_rendered = cJSON_Print(response_message);
+                    removeChar(response_message_rendered, '\n');
+                    removeChar(response_message_rendered, '\t');
+                    char *search_response = calloc(100000, 1);
+                    sprintf(search_response, "{\"type\": \"Profile\",\"message\":%s}", response_message_rendered);
+                    printf("\n%s\n", search_response);
+                    int sent_status = sendData(&client_fd, &client, search_response);
+                }
+                else {
+                    char *search_response = "{\"type\": \"Error\",\"message\":\"User doesn't exists.\"}";
+                    int sent_status = sendData(&client_fd, &client, search_response);
+                }
 
             }
             else if (strcmp(command, "follow") == 0) {
@@ -389,7 +523,87 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, logout_response);
             }
             else if (strcmp(command, "profile") == 0) {
+                char profile_user_token[1000];
+                char *signup_line = calloc(1000, 1);
+                strcpy(signup_line, buf);
+                char *signup_token2 = strtok(signup_line, delim);
+                signup_token2 = strtok(NULL, delim);
+                strcpy(profile_user_token, signup_token2);
+                profile_user_token[strlen(profile_user_token)] = '\0';
 
+                char *searched_user_file_name = calloc(100, 1);
+                char *this_user = get_user_by_token(profile_user_token);
+                sprintf(searched_user_file_name, "Resources/Users/%s.user.json", this_user);
+
+                FILE *fp = fopen(searched_user_file_name, "r");
+
+                if (fp != NULL) {
+                    char user_file_content[10000];
+                    char user_object[10000] = {'\0'};
+
+                    while (fgets(user_file_content, 10000, fp) != NULL) {
+                        strcat(user_object, user_file_content);
+                    }
+
+                    fclose(fp);
+
+                    cJSON *user_data = cJSON_Parse(user_object);
+
+
+                    cJSON *response_message = cJSON_CreateObject();
+
+                    cJSON *searched_username_object = cJSON_GetObjectItemCaseSensitive(user_data, "username");
+                    char *searched_username = cJSON_GetStringValue(searched_username_object);
+                    cJSON_AddStringToObject(response_message, "username", searched_username);
+
+                    cJSON *searched_bio_object = cJSON_GetObjectItemCaseSensitive(user_data, "bio");
+                    char *searched_bio = cJSON_GetStringValue(searched_bio_object);
+                    cJSON_AddStringToObject(response_message, "bio", searched_bio);
+
+                    cJSON * followers_list = cJSON_GetObjectItem(user_data, "followers");
+                    cJSON_AddNumberToObject(response_message, "numberOfFollowers", cJSON_GetArraySize(followers_list));
+
+                    cJSON * followings_list = cJSON_GetObjectItem(user_data, "followings");
+                    cJSON_AddNumberToObject(response_message, "numberOfFollowings", cJSON_GetArraySize(followings_list));
+
+
+                    cJSON *personal_tweets_ids = cJSON_GetObjectItem(user_data, "personalTweets");
+
+                    cJSON *personal_tweets = cJSON_CreateArray();
+
+                    for (int i = 0; i < cJSON_GetArraySize(personal_tweets_ids); i++) {
+                        cJSON *subitem = cJSON_GetArrayItem(personal_tweets_ids, i);
+                        int tweet_id = (int) cJSON_GetNumberValue(subitem);
+                        char *this_tweet_filename = calloc(100, 1);
+                        sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
+                        FILE *this_tweet_file = fopen(this_tweet_filename, "r");
+                        char temp[10000];
+                        char tweet_content[10000] = {'\0'};
+                        while (fgets(temp, 10000, this_tweet_file) != NULL) {
+                            strcat(tweet_content, temp);
+                        }
+                        fclose(fp);
+
+                        cJSON *this_tweet = cJSON_Parse(tweet_content);
+
+                        cJSON_AddItemToArray(personal_tweets, this_tweet);
+
+                    }
+
+                    cJSON_AddItemToObject(response_message, "allTweets", personal_tweets);
+
+                    char *response_message_rendered = cJSON_Print(response_message);
+                    removeChar(response_message_rendered, '\n');
+                    removeChar(response_message_rendered, '\t');
+                    char *search_response = calloc(100000, 1);
+                    sprintf(search_response, "{\"type\": \"Profile\",\"message\":%s}", response_message_rendered);
+                    printf("\n%s\n", search_response);
+                    int sent_status = sendData(&client_fd, &client, search_response);
+                }
+                else {
+                    char *search_response = "{\"type\": \"Error\",\"message\":\"Fot.\"}";
+                    int sent_status = sendData(&client_fd, &client, search_response);
+                }
             }
             else if (strcmp(command, "change") == 0) {
 
@@ -500,4 +714,14 @@ void print_logins() {
         printf("%s:%s\n", ptr->username, ptr->token);
         ptr = ptr->next;
     }
+}
+
+void removeChar(char* s, char c) {
+
+    int j, n = strlen(s);
+    for (int i = j = 0; i < n; i++)
+        if (s[i] != c)
+            s[j++] = s[i];
+
+    s[j] = '\0';
 }

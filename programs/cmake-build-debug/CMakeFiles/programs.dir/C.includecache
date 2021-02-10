@@ -6,26 +6,6 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/1234/Desktop/Tweety/programs/cJSON.c
-string.h
--
-stdio.h
--
-math.h
--
-stdlib.h
--
-limits.h
--
-ctype.h
--
-float.h
--
-locale.h
--
-cJSON.h
-C:/Users/1234/Desktop/Tweety/programs/cJSON.h
-
 C:/Users/1234/Desktop/Tweety/programs/cJSON.h
 stddef.h
 -
