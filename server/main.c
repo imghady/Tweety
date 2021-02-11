@@ -103,9 +103,19 @@ int main() {
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
                 login_token2 = strtok(NULL, delim);
+                if (login_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(login_username, login_token2);
                 login_username[strlen(login_username) - 1] = '\0';
                 login_token2 = strtok(NULL, delim);
+                if (login_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(login_password, login_token2);
 
                 char *login_response = calloc(1000, 1);
@@ -171,9 +181,19 @@ int main() {
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(signup_username, signup_token2);
                 signup_username[strlen(signup_username) - 1] = '\0';
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(signup_password, signup_token2);
                 signup_password[strlen(signup_password)] = '\0';
 
@@ -228,16 +248,27 @@ int main() {
                 char *bio_token2 = strtok(tweet_line, delim);
                 bio_token2 = strtok(NULL, delim);
                 bio_token2 = strtok(NULL, delim);
+                if (bio_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, bio_token2);
                 user_token[strlen(user_token) - 1] = '\0';
                 printf("\ntoken: %s", user_token);
+                bio_token2 = strtok(NULL, delim);
+                if (bio_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 while(bio_token2 != NULL){
-                    bio_token2 = strtok(NULL, delim);
                     if (bio_token2 == NULL){
                         break;
                     }
                     strcat(tweet, bio_token2);
                     strcat(tweet, " ");
+                    bio_token2 = strtok(NULL, delim);
                 }
                 tweet[strlen(tweet) - 1] = '\0';
                 printf("\ntweet: %s\n", tweet);
@@ -316,6 +347,11 @@ int main() {
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
                 login_token2 = strtok(NULL, delim);
+                if (login_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, login_token2);
 
                 char *this_user = get_user_by_token(user_token);
@@ -395,9 +431,19 @@ int main() {
                 strcpy(like_line, buf);
                 char *signup_token2 = strtok(like_line, delim);
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, signup_token2);
                 user_token[strlen(user_token) - 1] = '\0';
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(tweet_id, signup_token2);
                 tweet_id[strlen(tweet_id)] = '\0';
 
@@ -462,20 +508,36 @@ int main() {
                 char comment_message[1000] = {'\0'};
                 char *comment_line = calloc(1000, 1);
                 strcpy(comment_line, buf);
-                char *change_token = strtok(comment_line, delim);
-                change_token = strtok(NULL, delim);
-                strcpy(user_token, change_token);
+                char *comment_token = strtok(comment_line, delim);
+                comment_token = strtok(NULL, delim);
+                if (comment_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
+                strcpy(user_token, comment_token);
                 user_token[strlen(user_token) - 1] = '\0';
-                change_token = strtok(NULL, delim);
-                strcpy(tweet_id, change_token);
+                comment_token = strtok(NULL, delim);
+                if (comment_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
+                strcpy(tweet_id, comment_token);
                 tweet_id[strlen(tweet_id) - 1] = '\0';
-                while(change_token != NULL){
-                    change_token = strtok(NULL, delim);
-                    if (change_token == NULL){
+                comment_token = strtok(NULL, delim);
+                if (comment_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
+                while(comment_token != NULL){
+                    if (comment_token == NULL){
                         break;
                     }
-                    strcat(comment_message, change_token);
+                    strcat(comment_message, comment_token);
                     strcat(comment_message, " ");
+                    comment_token = strtok(NULL, delim);
                 }
                 comment_message[strlen(comment_message) - 1] = '\0';
                 printf("%s", comment_message);
@@ -517,9 +579,19 @@ int main() {
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(search_user_token, signup_token2);
                 search_user_token[strlen(search_user_token) - 1] = '\0';
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(username_for_search, signup_token2);
                 username_for_search[strlen(username_for_search)] = '\0';
 
@@ -625,9 +697,19 @@ int main() {
                 strcpy(follow_line, buf);
                 char *follow_token = strtok(follow_line, delim);
                 follow_token = strtok(NULL, delim);
+                if (follow_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, follow_token);
                 user_token[strlen(user_token) - 1] = '\0';
                 follow_token = strtok(NULL, delim);
+                if (follow_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(intended_user, follow_token);
                 intended_user[strlen(intended_user)] = '\0';
 
@@ -693,9 +775,19 @@ int main() {
                 strcpy(unfollow_line, buf);
                 char *unfollow_token = strtok(unfollow_line, delim);
                 unfollow_token = strtok(NULL, delim);
+                if (unfollow_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, unfollow_token);
                 user_token[strlen(user_token) - 1] = '\0';
                 unfollow_token = strtok(NULL, delim);
+                if (unfollow_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(intended_user, unfollow_token);
                 intended_user[strlen(intended_user)] = '\0';
 
@@ -781,16 +873,27 @@ int main() {
                 char *bio_token2 = strtok(bio_line, delim);
                 bio_token2 = strtok(NULL, delim);
                 bio_token2 = strtok(NULL, delim);
+                if (bio_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, bio_token2);
                 user_token[strlen(user_token) - 1] = '\0';
                 printf("\ntoken: %s", user_token);
+                bio_token2 = strtok(NULL, delim);
+                if (bio_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 while(bio_token2 != NULL){
-                    bio_token2 = strtok(NULL, delim);
                     if (bio_token2 == NULL){
                         break;
                     }
                     strcat(bio, bio_token2);
                     strcat(bio, " ");
+                    bio_token2 = strtok(NULL, delim);
                 }
                 bio[strlen(bio) - 1] = '\0';
                 printf("\nbio: %s\n", bio);
@@ -829,6 +932,11 @@ int main() {
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
                 login_token2 = strtok(NULL, delim);
+                if (login_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, login_token2);
                 printf("\n%s\n", user_token);
                 delete_login(user_token);
@@ -842,6 +950,11 @@ int main() {
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
                 signup_token2 = strtok(NULL, delim);
+                if (signup_token2 == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(profile_user_token, signup_token2);
                 profile_user_token[strlen(profile_user_token)] = '\0';
 
@@ -928,49 +1041,76 @@ int main() {
                 char *change_token = strtok(chnage_passsword_line, delim);
                 change_token = strtok(NULL, delim);
                 change_token = strtok(NULL, delim);
+                if (change_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(user_token, change_token);
                 user_token[strlen(user_token) - 1] = '\0';
                 change_token = strtok(NULL, delim);
+                if (change_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(current_password, change_token);
                 current_password[strlen(current_password) - 1] = '\0';
                 change_token = strtok(NULL, delim);
+                if (change_token == NULL) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, change_response);
+                    continue;
+                }
                 strcpy(new_password, change_token);
                 new_password[strlen(new_password)] = '\0';
 
-                char *this_user_file_name = calloc(100, 1);
-                char *this_user = get_user_by_token(user_token);
-                sprintf(this_user_file_name, "Resources/Users/%s.user.json", this_user);
 
-                FILE *fp = fopen(this_user_file_name, "r");
-
-                char user_file_content[10000];
-                char user_object[10000] = {'\0'};
-
-                while (fgets(user_file_content, 10000, fp) != NULL) {
-                    strcat(user_object, user_file_content);
-                }
-
-                fclose(fp);
-
-                cJSON *user_data = cJSON_Parse(user_object);
-                cJSON *this_password_obj = cJSON_GetObjectItem(user_data, "password");
-                char *this_password = cJSON_GetStringValue(this_password_obj);
-
-                if (strcmp(this_password, current_password) == 0) {
-                    cJSON_SetValuestring(this_password_obj, new_password);
-                    char *user_string = cJSON_Print(user_data);
-                    FILE *user_file;
-                    user_file = fopen(this_user_file_name, "w");
-                    fprintf(user_file, "%s", user_string);
-                    fclose(user_file);
-
-                    char *change_response = "{\"type\": \"Successful\",\"message\":\"Password has changed successfully\"}";
+                if (strlen(new_password) > 16) {
+                    char *change_response = "{\"type\": \"Error\",\"message\":\"New password is more than 16 characters.\"}";
                     int sent_status = sendData(&client_fd, &client, change_response);
                 }
                 else {
-                    char *change_response = "{\"type\": \"Error\",\"message\":\"Current password is incorrect.\"}";
-                    int sent_status = sendData(&client_fd, &client, change_response);
+                    char *this_user_file_name = calloc(100, 1);
+                    char *this_user = get_user_by_token(user_token);
+                    sprintf(this_user_file_name, "Resources/Users/%s.user.json", this_user);
+
+                    FILE *fp = fopen(this_user_file_name, "r");
+
+                    char user_file_content[10000];
+                    char user_object[10000] = {'\0'};
+
+                    while (fgets(user_file_content, 10000, fp) != NULL) {
+                        strcat(user_object, user_file_content);
+                    }
+
+                    fclose(fp);
+
+                    cJSON *user_data = cJSON_Parse(user_object);
+                    cJSON *this_password_obj = cJSON_GetObjectItem(user_data, "password");
+                    char *this_password = cJSON_GetStringValue(this_password_obj);
+
+                    if (strcmp(this_password, current_password) == 0) {
+                        cJSON_SetValuestring(this_password_obj, new_password);
+                        char *user_string = cJSON_Print(user_data);
+                        FILE *user_file;
+                        user_file = fopen(this_user_file_name, "w");
+                        fprintf(user_file, "%s", user_string);
+                        fclose(user_file);
+
+                        char *change_response = "{\"type\": \"Successful\",\"message\":\"Password has changed successfully\"}";
+                        int sent_status = sendData(&client_fd, &client, change_response);
+                    }
+                    else {
+                        char *change_response = "{\"type\": \"Error\",\"message\":\"Current password is incorrect.\"}";
+                        int sent_status = sendData(&client_fd, &client, change_response);
+                    }
                 }
+
+            }
+            else {
+                char *change_response = "{\"type\": \"Error\",\"message\":\"This command is invalid.\"}";
+                int sent_status = sendData(&client_fd, &client, change_response);
             }
 
 
