@@ -2,7 +2,7 @@
 	"username":	"shayan",
 	"password":	"ziretakht",
 	"bio":	"",
-	"followers":	[],
+	"followers":	["2"],
 	"followings":	[],
 	"personalTweets":	[1, 2, 3]
 }

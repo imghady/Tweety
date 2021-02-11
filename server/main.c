@@ -434,7 +434,58 @@ int main() {
 
             }
             else if (strcmp(command, "comment") == 0) {
+                char user_token[1000];
+                char tweet_id[1000];
+                char comment_message[1000] = {'\0'};
+                char *comment_line = calloc(1000, 1);
+                strcpy(comment_line, buf);
+                char *change_token = strtok(comment_line, delim);
+                change_token = strtok(NULL, delim);
+                strcpy(user_token, change_token);
+                user_token[strlen(user_token) - 1] = '\0';
+                change_token = strtok(NULL, delim);
+                strcpy(tweet_id, change_token);
+                tweet_id[strlen(tweet_id) - 1] = '\0';
+                while(change_token != NULL){
+                    change_token = strtok(NULL, delim);
+                    if (change_token == NULL){
+                        break;
+                    }
+                    strcat(comment_message, change_token);
+                    strcat(comment_message, " ");
+                }
+                comment_message[strlen(comment_message) - 1] = '\0';
+                printf("%s", comment_message);
 
+                char *tweet_file = calloc(1000, 1);
+                sprintf(tweet_file, "Resources/Tweets/%s.tweet.json", tweet_id);
+
+
+                FILE *fp = fopen(tweet_file, "r");
+                char temp[10000];
+                char tweet_file_content[10000] = {'\0'};
+
+                while (fgets(temp, 10000, fp) != NULL)
+                    strcat(tweet_file_content, temp);
+
+                fclose(fp);
+
+                char *this_user = get_user_by_token(user_token);
+
+                cJSON * tweet_data = cJSON_Parse(tweet_file_content);
+                cJSON * comments_obj = cJSON_GetObjectItem(tweet_data, "comments");
+                cJSON_AddStringToObject(comments_obj, this_user, comment_message);
+                char *tweet_string = cJSON_Print(tweet_data);
+                FILE *user_file;
+                user_file = fopen(tweet_file, "w");
+                fprintf(user_file, "%s", tweet_string);
+                fclose(user_file);
+
+
+                char *comment_response = calloc(100, 1);
+                sprintf(comment_response, "{\"type\": \"List\",\"message\":\"You commented on tweet %s.\"}", tweet_id);
+
+                int sent_status = sendData(&client_fd, &client, comment_response);
             }
             else if (strcmp(command, "search") == 0) {
                 char search_user_token[1000];

@@ -3,6 +3,6 @@
 	"password":	"2",
 	"bio":	"",
 	"followers":	[],
-	"followings":	[],
+	"followings":	["shayan"],
 	"personalTweets":	[]
 }
