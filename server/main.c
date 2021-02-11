@@ -309,37 +309,128 @@ int main() {
 
             }
             else if (strcmp(command, "refresh") == 0) {
+                char user_token[1010];
+                char *login_line = calloc(1017, 1);
+                strcpy(login_line, buf);
+                char *login_token2 = strtok(login_line, delim);
+                login_token2 = strtok(NULL, delim);
+                strcpy(user_token, login_token2);
 
+                char *this_user = get_user_by_token(user_token);
+
+                char *user_filename = calloc(1000, 1);
+                sprintf(user_filename, "Resources/Users/%s.user.json", this_user);
+
+
+                FILE *fp = fopen(user_filename, "r");
+                char user_file_content[10000];
+                char user_object[10000] = {'\0'};
+
+                while (fgets(user_file_content, 10000, fp) != NULL)
+                    strcat(user_object, user_file_content);
+
+                fclose(fp);
+
+                cJSON * user_data = cJSON_Parse(user_object);
+
+                cJSON *followings = cJSON_GetObjectItem(user_data, "followings");
+
+                cJSON *all_tweets = cJSON_CreateArray();
+
+
+                for (int i = 0; i < cJSON_GetArraySize(followings); i++) {
+                    cJSON *subitem = cJSON_GetArrayItem(followings, i);
+                    char *user = cJSON_GetStringValue(subitem);
+                    char *this_user_filename = calloc(100, 1);
+                    sprintf(this_user_filename, "Resources/Users/%s.user.json", user);
+                    FILE *this_user_file = fopen(this_user_filename, "r");
+                    char temp_user[10000];
+                    char user_content[10000] = {'\0'};
+                    while (fgets(temp_user, 10000, this_user_file) != NULL) {
+                        strcat(user_content, temp_user);
+                    }
+                    fclose(fp);
+
+                    cJSON *user_obj = cJSON_Parse(user_content);
+                    cJSON *tweets = cJSON_GetObjectItem(user_obj, "personalTweets");
+
+                    for (int j = 0; j < cJSON_GetArraySize(tweets); j++) {
+                        cJSON *subitem2 = cJSON_GetArrayItem(tweets, j);
+                        int tweet_id = (int) cJSON_GetNumberValue(subitem2);
+                        char *this_tweet_filename = calloc(100, 1);
+                        sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
+                        FILE *this_tweet_file = fopen(this_tweet_filename, "r");
+                        char temp[10000];
+                        char tweet_content[10000] = {'\0'};
+                        while (fgets(temp, 10000, this_tweet_file) != NULL) {
+                            strcat(tweet_content, temp);
+                        }
+                        fclose(fp);
+
+                        cJSON *this_tweet = cJSON_Parse(tweet_content);
+
+                        cJSON_AddItemToArray(all_tweets, this_tweet);
+
+                    }
+                }
+
+                char *all_tweets_rendered = cJSON_Print(all_tweets);
+
+                printf("\n%s\n", all_tweets_rendered);
+
+                char *refresh_response = calloc(10000, 1);
+                sprintf(refresh_response, "{\"type\": \"List\",\"message\":%s}", all_tweets_rendered);
+
+                removeChar(refresh_response, '\n');
+                removeChar(refresh_response, '\t');
+
+                int sent_status = sendData(&client_fd, &client, refresh_response);
             }
             else if (strcmp(command, "like") == 0) {
+                char user_token[1000];
+                char tweet_id[1000];
+                char *like_line = calloc(1000, 1);
+                strcpy(like_line, buf);
+                char *signup_token2 = strtok(like_line, delim);
+                signup_token2 = strtok(NULL, delim);
+                strcpy(user_token, signup_token2);
+                user_token[strlen(user_token) - 1] = '\0';
+                signup_token2 = strtok(NULL, delim);
+                strcpy(tweet_id, signup_token2);
+                tweet_id[strlen(tweet_id)] = '\0';
+
+                char *this_user = get_user_by_token(user_token);
 
 
-//                char *this_user = get_user_by_token(user_token);
-//
-//
-//                char *tweet_file = calloc(10, 1);
-//                sprintf(tweet_file, "Resources/Tweets/%s.tweet.json", tweet_id);
-//
-//
-//                FILE *fp = fopen(tweet_file, "r");
-//                char user_file_content[10000];
-//                char user_object[10000] = {'\0'};
-//
-//                while (fgets(user_file_content, 10000, fp) != NULL)
-//                    strcat(user_object, user_file_content);
-//
-//                fclose(fp);
-//
-//                cJSON * tweet_data = cJSON_Parse(user_object);
-//                cJSON * likes_value = cJSON_GetObjectItem(tweet_data, "likes");
-//                int likes = (int)cJSON_GetNumberValue(likes_value);
-//                likes++;
-//                printf("%d", likes);
-//                char *tweet_string = cJSON_Print(tweet_data);
-//                FILE *user_file;
-//                user_file = fopen(file_name, "w");
-//                fprintf(user_file, "%s", user_string);
-//                fclose(user_file);
+                char *tweet_file = calloc(1000, 1);
+                sprintf(tweet_file, "Resources/Tweets/%s.tweet.json", tweet_id);
+
+
+                FILE *fp = fopen(tweet_file, "r");
+                char user_file_content[10000];
+                char user_object[10000] = {'\0'};
+
+                while (fgets(user_file_content, 10000, fp) != NULL)
+                    strcat(user_object, user_file_content);
+
+                fclose(fp);
+
+                cJSON * tweet_data = cJSON_Parse(user_object);
+                cJSON * likes_value = cJSON_GetObjectItem(tweet_data, "likes");
+                int likes = (int)cJSON_GetNumberValue(likes_value);
+                likes++;
+                cJSON_SetNumberValue(likes_value, likes);
+                char *tweet_string = cJSON_Print(tweet_data);
+                FILE *user_file;
+                user_file = fopen(tweet_file, "w");
+                fprintf(user_file, "%s", tweet_string);
+                fclose(user_file);
+
+
+                char *like_response = calloc(100, 1);
+                sprintf(like_response, "{\"type\": \"List\",\"message\":\"Tweet %s successfully liked.\"}", tweet_id);
+
+                int sent_status = sendData(&client_fd, &client, like_response);
 
             }
             else if (strcmp(command, "comment") == 0) {
