@@ -97,8 +97,8 @@ int main() {
             buf[strlen(buf) - 1] = '\0';
 
             if (strcmp(command, "login") == 0){
-                char login_username[1000];
-                char login_password[1000];
+                char login_username[1000] = {'\0'};
+                char login_password[1000] = {'\0'};
                 char *login_line = calloc(1000, 1);
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
@@ -120,12 +120,12 @@ int main() {
 
                 char *login_response = calloc(1000, 1);
 
-                char file_name[1000];
+                char file_name[1000] = {'\0'};
                 sprintf(file_name, "Resources/Users/%s.user.json", login_username);
 
                 FILE *login_check_file_existence;
                 if ((login_check_file_existence = fopen(file_name, "r"))){
-                    char user_file_content[10000];
+                    char user_file_content[10000] = {'\0'};
                     char user_object[10000] = {'\0'};
 
                     while (fgets(user_file_content, 10000, login_check_file_existence) != NULL)
@@ -175,8 +175,8 @@ int main() {
             else if (strcmp(command, "signup") == 0) {
                 cJSON *signup_root;
                 signup_root = cJSON_CreateObject();
-                char signup_username[1000];
-                char signup_password[1000];
+                char signup_username[1000] = {'\0'};
+                char signup_password[1000] = {'\0'};
                 char *signup_line = calloc(1000, 1);
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
@@ -220,7 +220,7 @@ int main() {
                 char *signup_string = cJSON_Print(signup_root);
                 char *signup_response = calloc(1000, 1);
 
-                char signup_file_name[1000];
+                char signup_file_name[1000] = {'\0'};
                 sprintf(signup_file_name, "Resources/Users/%s.user.json", signup_username);
 
                 FILE *signup_check_file_existence;
@@ -286,10 +286,10 @@ int main() {
 
                 printf("%s\n", this_user);
 
-                char file_name[1000];
+                char file_name[1000] = {'\0'};
                 sprintf(file_name, "Resources/Users/%s.user.json", this_user);
 
-                char tweet_file_name[1000];
+                char tweet_file_name[1000] = {'\0'};
                 sprintf(tweet_file_name, "Resources/Tweets/%d.tweet.json", this_tweet_id);
 
                 cJSON *tweet_root;
@@ -315,7 +315,7 @@ int main() {
 
 
                 FILE *fp = fopen(file_name, "r");
-                char user_file_content[10000];
+                char user_file_content[10000] = {'\0'};
                 char user_object[10000] = {'\0'};
 
                 while (fgets(user_file_content, 10000, fp) != NULL)
@@ -342,7 +342,7 @@ int main() {
 
             }
             else if (strcmp(command, "refresh") == 0) {
-                char user_token[1010];
+                char user_token[1010] = {'\0'};
                 char *login_line = calloc(1017, 1);
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
@@ -361,7 +361,7 @@ int main() {
 
 
                 FILE *fp = fopen(user_filename, "r");
-                char user_file_content[10000];
+                char user_file_content[10000] = {'\0'};
                 char user_object[10000] = {'\0'};
 
                 while (fgets(user_file_content, 10000, fp) != NULL)
@@ -382,7 +382,7 @@ int main() {
                     char *this_user_filename = calloc(100, 1);
                     sprintf(this_user_filename, "Resources/Users/%s.user.json", user);
                     FILE *this_user_file = fopen(this_user_filename, "r");
-                    char temp_user[10000];
+                    char temp_user[10000] = {'\0'};
                     char user_content[10000] = {'\0'};
                     while (fgets(temp_user, 10000, this_user_file) != NULL) {
                         strcat(user_content, temp_user);
@@ -398,7 +398,7 @@ int main() {
                         char *this_tweet_filename = calloc(100, 1);
                         sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
                         FILE *this_tweet_file = fopen(this_tweet_filename, "r");
-                        char temp[10000];
+                        char temp[10000] = {'\0'};
                         char tweet_content[10000] = {'\0'};
                         while (fgets(temp, 10000, this_tweet_file) != NULL) {
                             strcat(tweet_content, temp);
@@ -425,8 +425,8 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, refresh_response);
             }
             else if (strcmp(command, "like") == 0) {
-                char user_token[1000];
-                char tweet_id[1000];
+                char user_token[1000] = {'\0'};
+                char tweet_id[1000] = {'\0'};
                 char *like_line = calloc(1000, 1);
                 strcpy(like_line, buf);
                 char *signup_token2 = strtok(like_line, delim);
@@ -455,7 +455,7 @@ int main() {
 
 
                 FILE *fp = fopen(tweet_file, "r");
-                char user_file_content[10000];
+                char user_file_content[10000] = {'\0'};
                 char user_object[10000] = {'\0'};
 
                 while (fgets(user_file_content, 10000, fp) != NULL)
@@ -503,8 +503,8 @@ int main() {
 
             }
             else if (strcmp(command, "comment") == 0) {
-                char user_token[1000];
-                char tweet_id[1000];
+                char user_token[1000] = {'\0'};
+                char tweet_id[1000] = {'\0'};
                 char comment_message[1000] = {'\0'};
                 char *comment_line = calloc(1000, 1);
                 strcpy(comment_line, buf);
@@ -547,7 +547,7 @@ int main() {
 
 
                 FILE *fp = fopen(tweet_file, "r");
-                char temp[10000];
+                char temp[10000] = {'\0'};
                 char tweet_file_content[10000] = {'\0'};
 
                 while (fgets(temp, 10000, fp) != NULL)
@@ -573,8 +573,8 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, comment_response);
             }
             else if (strcmp(command, "search") == 0) {
-                char search_user_token[1000];
-                char username_for_search[1000];
+                char search_user_token[1000] = {'\0'};
+                char username_for_search[1000] = {'\0'};
                 char *signup_line = calloc(1000, 1);
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
@@ -603,7 +603,7 @@ int main() {
                 FILE *fp = fopen(searched_user_file_name, "r");
 
                 if (fp != NULL) {
-                    char user_file_content[10000];
+                    char user_file_content[10000] = {'\0'};
                     char user_object[10000] = {'\0'};
 
                     while (fgets(user_file_content, 10000, fp) != NULL) {
@@ -661,7 +661,7 @@ int main() {
                         char *this_tweet_filename = calloc(100, 1);
                         sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
                         FILE *this_tweet_file = fopen(this_tweet_filename, "r");
-                        char temp[10000];
+                        char temp[10000] = {'\0'};
                         char tweet_content[10000] = {'\0'};
                         while (fgets(temp, 10000, this_tweet_file) != NULL) {
                             strcat(tweet_content, temp);
@@ -691,8 +691,8 @@ int main() {
 
             }
             else if (strcmp(command, "follow") == 0) {
-                char user_token[1000];
-                char intended_user[1000];
+                char user_token[1000] = {'\0'};
+                char intended_user[1000] = {'\0'};
                 char *follow_line = calloc(1000, 1);
                 strcpy(follow_line, buf);
                 char *follow_token = strtok(follow_line, delim);
@@ -719,7 +719,7 @@ int main() {
                 sprintf(this_user_filename, "Resources/Users/%s.user.json", this_user);
 
                 FILE *fp = fopen(this_user_filename, "r");
-                char this_user_file_content[10000];
+                char this_user_file_content[10000] = {'\0'};
                 char this_user_object[10000] = {'\0'};
 
                 while (fgets(this_user_file_content, 10000, fp) != NULL)
@@ -741,7 +741,7 @@ int main() {
                 sprintf(intended_user_filename, "Resources/Users/%s.user.json", intended_user);
 
                 FILE *intendet_user_file_r = fopen(intended_user_filename, "r");
-                char intended_user_file_content[10000];
+                char intended_user_file_content[10000] = {'\0'};
                 char intended_user_object[10000] = {'\0'};
 
                 while (fgets(intended_user_file_content, 10000, intendet_user_file_r) != NULL)
@@ -764,8 +764,8 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, follow_response);
             }
             else if (strcmp(command, "unfollow") == 0) {
-                char user_token[1000];
-                char intended_user[1000];
+                char user_token[1000] = {'\0'};
+                char intended_user[1000] = {'\0'};
                 char *unfollow_line = calloc(1000, 1);
                 strcpy(unfollow_line, buf);
                 char *unfollow_token = strtok(unfollow_line, delim);
@@ -792,7 +792,7 @@ int main() {
                 sprintf(this_user_filename, "Resources/Users/%s.user.json", this_user);
 
                 FILE *fp = fopen(this_user_filename, "r");
-                char this_user_file_content[10000];
+                char this_user_file_content[10000] = {'\0'};
                 char this_user_object[10000] = {'\0'};
 
 
@@ -825,7 +825,7 @@ int main() {
                 sprintf(intended_user_filename, "Resources/Users/%s.user.json", intended_user);
 
                 FILE *intendet_user_file_r = fopen(intended_user_filename, "r");
-                char intended_user_file_content[10000];
+                char intended_user_file_content[10000] = {'\0'};
                 char intended_user_object[10000] = {'\0'};
 
                 while (fgets(intended_user_file_content, 10000, intendet_user_file_r) != NULL)
@@ -893,11 +893,11 @@ int main() {
 
                 printf("%s\n", this_user);
 
-                char file_name[1000];
+                char file_name[1000] = {'\0'};
                 sprintf(file_name, "Resources/Users/%s.user.json", this_user);
 
                 FILE *fp = fopen(file_name, "r");
-                char user_file_content[10000];
+                char user_file_content[10000] = {'\0'};
                 char user_object[10000] = {'\0'};
 
                 while (fgets(user_file_content, 10000, fp) != NULL)
@@ -918,7 +918,7 @@ int main() {
 
             }
             else if (strcmp(command, "logout") == 0) {
-                char user_token[1010];
+                char user_token[1010] = {'\0'};
                 char *login_line = calloc(1017, 1);
                 strcpy(login_line, buf);
                 char *login_token2 = strtok(login_line, delim);
@@ -936,7 +936,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, logout_response);
             }
             else if (strcmp(command, "profile") == 0) {
-                char profile_user_token[1000];
+                char profile_user_token[1000] = {'\0'};
                 char *signup_line = calloc(1000, 1);
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
@@ -956,7 +956,7 @@ int main() {
                 FILE *fp = fopen(searched_user_file_name, "r");
 
                 if (fp != NULL) {
-                    char user_file_content[10000];
+                    char user_file_content[10000] = {'\0'};
                     char user_object[10000] = {'\0'};
 
                     while (fgets(user_file_content, 10000, fp) != NULL) {
@@ -995,7 +995,7 @@ int main() {
                         char *this_tweet_filename = calloc(100, 1);
                         sprintf(this_tweet_filename, "Resources/Tweets/%d.tweet.json", tweet_id);
                         FILE *this_tweet_file = fopen(this_tweet_filename, "r");
-                        char temp[10000];
+                        char temp[10000] = {'\0'};
                         char tweet_content[10000] = {'\0'};
                         while (fgets(temp, 10000, this_tweet_file) != NULL) {
                             strcat(tweet_content, temp);
@@ -1024,9 +1024,9 @@ int main() {
                 }
             }
             else if (strcmp(command, "change") == 0) {
-                char user_token[1000];
-                char current_password[1000];
-                char new_password[1000];
+                char user_token[1000] = {'\0'};
+                char current_password[1000] = {'\0'};
+                char new_password[1000] = {'\0'};
                 char *chnage_passsword_line = calloc(1000, 1);
                 strcpy(chnage_passsword_line, buf);
                 char *change_token = strtok(chnage_passsword_line, delim);
@@ -1068,7 +1068,7 @@ int main() {
 
                     FILE *fp = fopen(this_user_file_name, "r");
 
-                    char user_file_content[10000];
+                    char user_file_content[10000] = {'\0'};
                     char user_object[10000] = {'\0'};
 
                     while (fgets(user_file_content, 10000, fp) != NULL) {
