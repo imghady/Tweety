@@ -759,11 +759,6 @@ int main() {
                 fprintf(intended_user_file, "%s", intended_user_string);
                 fclose(intended_user_file);
 
-                free(this_user_file_content);
-                free(this_user_object);
-                free(intended_user_file_content);
-                free(intended_user_object);
-
                 char *follow_response = calloc(1000, 1);
                 sprintf(follow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %\"}", intended_user);
                 int sent_status = sendData(&client_fd, &client, follow_response);
@@ -856,13 +851,9 @@ int main() {
                 fprintf(intended_user_file, "%s", intended_user_string);
                 fclose(intended_user_file);
 
-                free(this_user_file_content);
-                free(this_user_object);
-                free(intended_user_file_content);
-                free(intended_user_object);
-
                 char *unfollow_response = calloc(1000, 1);
                 sprintf(unfollow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %s\"}", intended_user);
+                printf("%s", unfollow_response);
                 int sent_status = sendData(&client_fd, &client, unfollow_response);
             }
             else if (strcmp(command, "set") == 0) {
