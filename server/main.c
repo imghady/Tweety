@@ -270,6 +270,8 @@ int main() {
                 cJSON * comments = cJSON_CreateObject();
                 cJSON_AddItemToObject(tweet_root, "comments", comments);
                 cJSON_AddNumberToObject(tweet_root, "likes", 0);
+                cJSON * users_liked = cJSON_CreateArray();
+                cJSON_AddItemToObject(tweet_root, "users_liked", users_liked);
 
                 printf("\n\n\n%s\n", cJSON_Print(tweet_root));
 
@@ -417,18 +419,39 @@ int main() {
 
                 cJSON * tweet_data = cJSON_Parse(user_object);
                 cJSON * likes_value = cJSON_GetObjectItem(tweet_data, "likes");
-                int likes = (int)cJSON_GetNumberValue(likes_value);
-                likes++;
-                cJSON_SetNumberValue(likes_value, likes);
-                char *tweet_string = cJSON_Print(tweet_data);
-                FILE *user_file;
-                user_file = fopen(tweet_file, "w");
-                fprintf(user_file, "%s", tweet_string);
-                fclose(user_file);
+                cJSON * users_liked = cJSON_GetObjectItem(tweet_data, "users_liked");
 
+                int this_user_liked = 0;
+                for (int i = 0; i < cJSON_GetArraySize(users_liked); i++) {
+                    cJSON *subitem = cJSON_GetArrayItem(users_liked, i);
+                    char *user = cJSON_GetStringValue(subitem);
+                    printf("%s, %s\n", user, this_user);
+                    if (strcmp(user, this_user) == 0){
+                        this_user_liked = 1;
+                    }
+                }
 
                 char *like_response = calloc(100, 1);
-                sprintf(like_response, "{\"type\": \"List\",\"message\":\"Tweet %s successfully liked.\"}", tweet_id);
+
+                if (this_user_liked == 0) {
+                    int likes = (int)cJSON_GetNumberValue(likes_value);
+                    likes++;
+                    cJSON_SetNumberValue(likes_value, likes);
+                    cJSON * this_user_obj = cJSON_CreateString(this_user);
+                    cJSON_AddItemToArray(users_liked, this_user_obj);
+                    char *tweet_string = cJSON_Print(tweet_data);
+                    FILE *user_file;
+                    user_file = fopen(tweet_file, "w");
+                    fprintf(user_file, "%s", tweet_string);
+                    fclose(user_file);
+
+
+                    sprintf(like_response, "{\"type\": \"List\",\"message\":\"Tweet %s successfully liked.\"}", tweet_id);
+                }
+                else {
+                    sprintf(like_response, "{\"type\": \"List\",\"message\":\"You already liked this tweet.\"}");
+                }
+
 
                 int sent_status = sendData(&client_fd, &client, like_response);
 
@@ -747,7 +770,7 @@ int main() {
                 free(intended_user_object);
 
                 char *unfollow_response = calloc(1000, 1);
-                sprintf(unfollow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %\"}", intended_user);
+                sprintf(unfollow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %s\"}", intended_user);
                 int sent_status = sendData(&client_fd, &client, unfollow_response);
             }
             else if (strcmp(command, "set") == 0) {

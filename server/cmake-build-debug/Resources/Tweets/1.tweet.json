@@ -3,6 +3,8 @@
 	"author":	"shayan",
 	"content":	"This is my first tweet!",
 	"comments":	{
+		"2":	"this is a comment"
 	},
-	"likes":	0
+	"likes":	4,
+	"users_liked":	["2"]
 }
