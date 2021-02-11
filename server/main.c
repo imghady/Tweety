@@ -545,10 +545,159 @@ int main() {
 
             }
             else if (strcmp(command, "follow") == 0) {
+                char user_token[1000];
+                char intended_user[1000];
+                char *follow_line = calloc(1000, 1);
+                strcpy(follow_line, buf);
+                char *follow_token = strtok(follow_line, delim);
+                follow_token = strtok(NULL, delim);
+                strcpy(user_token, follow_token);
+                user_token[strlen(user_token) - 1] = '\0';
+                follow_token = strtok(NULL, delim);
+                strcpy(intended_user, follow_token);
+                intended_user[strlen(intended_user)] = '\0';
 
+                char *this_user = get_user_by_token(user_token);
+
+                char *this_user_filename = calloc(1000, 1);
+                sprintf(this_user_filename, "Resources/Users/%s.user.json", this_user);
+
+                FILE *fp = fopen(this_user_filename, "r");
+                char this_user_file_content[10000];
+                char this_user_object[10000] = {'\0'};
+
+                while (fgets(this_user_file_content, 10000, fp) != NULL)
+                    strcat(this_user_object, this_user_file_content);
+
+                fclose(fp);
+
+                cJSON * user_data = cJSON_Parse(this_user_object);
+                cJSON * followings = cJSON_GetObjectItem(user_data, "followings");
+                cJSON *intended_user_obj = cJSON_CreateString(intended_user);
+                cJSON_AddItemToArray(followings, intended_user_obj);
+                char *user_string = cJSON_Print(user_data);
+                FILE *this_user_file;
+                this_user_file = fopen(this_user_filename, "w");
+                fprintf(this_user_file, "%s", user_string);
+                fclose(this_user_file);
+
+                char *intended_user_filename = calloc(1000, 1);
+                sprintf(intended_user_filename, "Resources/Users/%s.user.json", intended_user);
+
+                FILE *intendet_user_file_r = fopen(intended_user_filename, "r");
+                char intended_user_file_content[10000];
+                char intended_user_object[10000] = {'\0'};
+
+                while (fgets(intended_user_file_content, 10000, intendet_user_file_r) != NULL)
+                    strcat(intended_user_object, intended_user_file_content);
+
+                fclose(fp);
+
+                cJSON * intended_user_data = cJSON_Parse(intended_user_object);
+                cJSON * followers = cJSON_GetObjectItem(intended_user_data, "followers");
+                cJSON *this_user_obj = cJSON_CreateString(this_user);
+                cJSON_AddItemToArray(followers, this_user_obj);
+                char *intended_user_string = cJSON_Print(intended_user_data);
+                FILE *intended_user_file;
+                intended_user_file = fopen(intended_user_filename, "w");
+                fprintf(intended_user_file, "%s", intended_user_string);
+                fclose(intended_user_file);
+
+                free(this_user_file_content);
+                free(this_user_object);
+                free(intended_user_file_content);
+                free(intended_user_object);
+
+                char *follow_response = calloc(1000, 1);
+                sprintf(follow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %\"}", intended_user);
+                int sent_status = sendData(&client_fd, &client, follow_response);
             }
             else if (strcmp(command, "unfollow") == 0) {
+                char user_token[1000];
+                char intended_user[1000];
+                char *unfollow_line = calloc(1000, 1);
+                strcpy(unfollow_line, buf);
+                char *unfollow_token = strtok(unfollow_line, delim);
+                unfollow_token = strtok(NULL, delim);
+                strcpy(user_token, unfollow_token);
+                user_token[strlen(user_token) - 1] = '\0';
+                unfollow_token = strtok(NULL, delim);
+                strcpy(intended_user, unfollow_token);
+                intended_user[strlen(intended_user)] = '\0';
 
+                char *this_user = get_user_by_token(user_token);
+
+                char *this_user_filename = calloc(1000, 1);
+                sprintf(this_user_filename, "Resources/Users/%s.user.json", this_user);
+
+                FILE *fp = fopen(this_user_filename, "r");
+                char this_user_file_content[10000];
+                char this_user_object[10000] = {'\0'};
+
+
+                while (fgets(this_user_file_content, 10000, fp) != NULL)
+                    strcat(this_user_object, this_user_file_content);
+
+                fclose(fp);
+
+                cJSON * user_data = cJSON_Parse(this_user_object);
+                cJSON * followings = cJSON_GetObjectItem(user_data, "followings");
+
+                int i = 0;
+                for (i = 0; i < cJSON_GetArraySize(followings); i++) {
+                    cJSON *following = cJSON_GetArrayItem(followings, i);
+                    char * following_username = cJSON_GetStringValue(following);
+                    if (strcmp(following_username, intended_user) == 0) {
+                         break;
+                    }
+                }
+                printf("\n%d", i);
+                cJSON_DeleteItemFromArray(followings, i);
+
+                char *user_string = cJSON_Print(user_data);
+                FILE *this_user_file;
+                this_user_file = fopen(this_user_filename, "w");
+                fprintf(this_user_file, "%s", user_string);
+                fclose(this_user_file);
+
+                char *intended_user_filename = calloc(1000, 1);
+                sprintf(intended_user_filename, "Resources/Users/%s.user.json", intended_user);
+
+                FILE *intendet_user_file_r = fopen(intended_user_filename, "r");
+                char intended_user_file_content[10000];
+                char intended_user_object[10000] = {'\0'};
+
+                while (fgets(intended_user_file_content, 10000, intendet_user_file_r) != NULL)
+                    strcat(intended_user_object, intended_user_file_content);
+
+                fclose(fp);
+
+                cJSON * intended_user_data = cJSON_Parse(intended_user_object);
+                cJSON * followers = cJSON_GetObjectItem(intended_user_data, "followers");
+
+                for (i = 0; i < cJSON_GetArraySize(followers); i++) {
+                    cJSON *follower = cJSON_GetArrayItem(followers, i);
+                    char * follower_username = cJSON_GetStringValue(follower);
+                    if (strcmp(follower_username, this_user) == 0) {
+                        break;
+                    }
+                }
+                cJSON_DeleteItemFromArray(followers, i);
+
+                char *intended_user_string = cJSON_Print(intended_user_data);
+                FILE *intended_user_file;
+                intended_user_file = fopen(intended_user_filename, "w");
+                fprintf(intended_user_file, "%s", intended_user_string);
+                fclose(intended_user_file);
+
+                free(this_user_file_content);
+                free(this_user_object);
+                free(intended_user_file_content);
+                free(intended_user_object);
+
+                char *unfollow_response = calloc(1000, 1);
+                sprintf(unfollow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %\"}", intended_user);
+                int sent_status = sendData(&client_fd, &client, unfollow_response);
             }
             else if (strcmp(command, "set") == 0) {
                 char bio[1000] = {'\0'};
