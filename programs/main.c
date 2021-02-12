@@ -15,6 +15,7 @@ void print_Personal ();
 void print_follow ();
 void print_unfollow ();
 void print_like ();
+void print_search ();
 int confirm_password ( char password[], char c_password[] );
 void remove_doublequot (char * input);
 
@@ -74,12 +75,12 @@ int main() {
                             }
                             else if (timeline_key == 1) {
                                 printf("write your tweet:\n");
-                                char tweet[1000];
+                                char tweet[10000];
                                 scanf("%*c%[^\n]s", tweet);
                                 //printf("\n%s\n", tweet);
                                 //printf("\n%s\n", token);
                                 char * tweet_feedback;
-                                char to_send_tweet[1000] = "send tweet ";
+                                char to_send_tweet[10000] = "send tweet ";
                                 strcat(to_send_tweet, token);
                                 strcat(to_send_tweet, middle);
                                 strcat(to_send_tweet, tweet);
@@ -175,11 +176,11 @@ int main() {
                                     printf("\nplease enter the tweet id:\n");
                                     char tweet_id_to_comment[100];
                                     scanf("%s", tweet_id_to_comment);
-                                    char comment[1000];
+                                    char comment[10000];
                                     printf("\nwrite your comment:\n");
                                     scanf("%*c%[^\n]s", comment);
                                     char * comment_feedback;
-                                    char to_send_comment[1000] = "comment ";
+                                    char to_send_comment[10000] = "comment ";
                                     strcat(to_send_comment, token);
                                     strcat(to_send_comment, middle);
                                     strcat(to_send_comment, tweet_id_to_comment);
@@ -260,157 +261,259 @@ int main() {
                     }
 
                     else if (command == 2) {
-                        printf("\nenter the username that you want to search for:\n");
-                        char search_username[1000];
-                        scanf("%s", search_username);
-                        char * search_feedback;
-                        char to_send_search[1000] = "search ";
-                        strcat(to_send_search, token);
-                        strcat(to_send_search, middle);
-                        strcat(to_send_search, search_username);
-                        strcat(to_send_search, "\n");
-                        search_feedback = send_data(to_send_search);
-                        printf("%s\n", search_feedback);
-
-                        cJSON * root_search = cJSON_Parse(search_feedback);
-                        cJSON * search_type = cJSON_GetObjectItemCaseSensitive(root_search, "type");
-                        char * search_type_rendered = cJSON_Print(search_type);
-                        remove_doublequot(search_type_rendered);
-                        //printf("\ntype: %s\n", search_type_rendered);
-                        if (strcmp(search_type_rendered, "Error") == 0) {
-                            //printf("\nerror\n");
-                            cJSON *search_message = cJSON_GetObjectItemCaseSensitive(root_search, "message");
-                            char *search_message_rendered = cJSON_Print(search_message);
-                            remove_doublequot(search_message_rendered);
-                            printf("\n%s\n", search_message_rendered);
-                        } else {
-
-                            cJSON *search_message = cJSON_GetObjectItemCaseSensitive(root_search, "message");
-                            char *search_message_rendered = cJSON_Print(search_message);
-                            //printf("\n%s\n", search_message_rendered);
-
-                            cJSON *root_username_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_username_in = cJSON_GetObjectItemCaseSensitive(root_username_search,"username");
-                            char *search_username_rendered = cJSON_Print(search_username_in);
-                            remove_doublequot(search_username_rendered);
-
-                            cJSON *root_bio_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_bio = cJSON_GetObjectItemCaseSensitive(root_bio_search, "bio");
-                            char *search_bio_rendered = cJSON_Print(search_bio);
-                            remove_doublequot(search_bio_rendered);
-
-                            cJSON *root_followers_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_followers = cJSON_GetObjectItemCaseSensitive(root_followers_search,"numberOfFollowers");
-                            char *search_followers_rendered = cJSON_Print(search_followers);
-
-                            cJSON *root_followings_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_followings = cJSON_GetObjectItemCaseSensitive(root_followings_search,"numberOfFollowings");
-                            char *search_followings_rendered = cJSON_Print(search_followings);
-
-                            cJSON *root_status_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_status = cJSON_GetObjectItemCaseSensitive(root_status_search, "followStatus");
-                            char *search_status_rendered = cJSON_Print(search_status);
-                            remove_doublequot(search_status_rendered);
-
-                            cJSON *root_tweets_search = cJSON_Parse(search_message_rendered);
-                            cJSON *search_tweets = cJSON_GetObjectItemCaseSensitive(root_tweets_search, "allTweets");
-                            //char * search_tweets_rendered = cJSON_Print(search_tweets);
-                            int number_of_tweets_search = cJSON_GetArraySize(search_tweets);
-
-
-                            printf("\nusername: %s\n", search_username_rendered);
-                            printf("\nbio: %s\n", search_bio_rendered);
-                            printf("\nnumber of followers: %s\n", search_followers_rendered);
-                            printf("\nnumber of followings: %s\n", search_followings_rendered);
-                            printf("\nfollow status: %s\n", search_status_rendered);
-                            //printf("\nall tweets: %s\n", search_tweets_rendered);
-                            printf("\nnumber of tweets: %d\n", number_of_tweets_search);
-                            printf("-------------------------------------------");
-
-                            for (int w = 0; w < number_of_tweets_search; w++) {
-                                cJSON *each_tweet_search = cJSON_GetArrayItem(search_tweets, w);
-                                char *each_tweet_rendered_search = cJSON_Print(each_tweet_search);
-                                //printf("\ntweet %d is: %s\n", k, each_tweet_rendered_search);
-
-                                cJSON *root_tweets_id_search = cJSON_Parse(each_tweet_rendered_search);
-                                cJSON *search_tweets_id = cJSON_GetObjectItemCaseSensitive(root_tweets_id_search, "id");
-                                char *search_tweets_id_rendered = cJSON_Print(search_tweets_id);
-
-                                cJSON *root_tweets_author_search = cJSON_Parse(each_tweet_rendered_search);
-                                cJSON *search_tweets_author = cJSON_GetObjectItemCaseSensitive(root_tweets_author_search, "author");
-                                char *search_tweets_author_rendered = cJSON_Print(search_tweets_author);
-                                remove_doublequot(search_tweets_author_rendered);
-
-                                cJSON *root_tweets_content_search = cJSON_Parse(each_tweet_rendered_search);
-                                cJSON *search_tweets_content = cJSON_GetObjectItemCaseSensitive(root_tweets_content_search, "content");
-                                char *search_tweets_content_rendered = cJSON_Print(search_tweets_content);
-                                remove_doublequot(search_tweets_content_rendered);
-
-                                cJSON * root_tweets_comments_search = cJSON_Parse(each_tweet_rendered_search);
-                                cJSON * search_tweets_comments = cJSON_GetObjectItemCaseSensitive(root_tweets_comments_search, "comments");
-                                //char * search_tweets_comments_rendered = cJSON_Print(search_tweets_comments);
-
-                                int number_of_comments_search = cJSON_GetArraySize(search_tweets_comments);
-
-                                cJSON *root_tweets_likes_search = cJSON_Parse(each_tweet_rendered_search);
-                                cJSON *search_tweets_likes = cJSON_GetObjectItemCaseSensitive(root_tweets_likes_search,"likes");
-                                char *search_tweets_likes_rendered = cJSON_Print(search_tweets_likes);
-
-                                printf("\ntweet id: %s\n", search_tweets_id_rendered);
-                                printf("\nauthor: %s\n", search_tweets_author_rendered);
-                                printf("\ntweet: %s\n", search_tweets_content_rendered);
-                                printf("\nlikes: %s\n", search_tweets_likes_rendered);
-                                printf("\nnumber of comments: %d\n", number_of_comments_search);
-                                printf("-------------------------------------------");
+                        while (1) {
+                            print_search();
+                            int search_key;
+                            scanf("%d", &search_key);
+                            if (search_key == 3) {
+                                break;
                             }
-                            if (strcmp(search_status_rendered, "NotFollowed") == 0) {
-                                print_follow();
-                                int follow_key;
-                                scanf("%d",&follow_key);
-                                if (follow_key == 1) {
-                                    char * follow_feedback;
-                                    char to_send_follow[1000] = "follow ";
-                                    strcat(to_send_follow, token);
-                                    strcat(to_send_follow, middle);
-                                    strcat(to_send_follow, search_username);
-                                    strcat(to_send_follow, "\n");
-                                    follow_feedback = send_data(to_send_follow);
-                                    //printf("%s\n", follow_feedback);
-                                    cJSON * follow_search = cJSON_Parse(follow_feedback);
-                                    cJSON * follow_type = cJSON_GetObjectItemCaseSensitive(follow_search, "type");
-                                    char * follow_type_rendered = cJSON_Print(follow_type);
-                                    remove_doublequot(follow_type_rendered);
-                                    //printf("\n%s\n", follow_type_rendered);
-                                    if (strcmp(follow_type_rendered,"Successful") == 0) {
-                                        printf("\nyou successfully follow %s\nnow you can share your tweets together ;)\n",search_username);
+                            else if (search_key == 1) {
+                                printf("\nenter the username that you want to search for:\n");
+                                char search_username[1000];
+                                scanf("%s", search_username);
+                                char *search_feedback;
+                                char to_send_search[1000] = "search ";
+                                strcat(to_send_search, token);
+                                strcat(to_send_search, middle);
+                                strcat(to_send_search, search_username);
+                                strcat(to_send_search, "\n");
+                                search_feedback = send_data(to_send_search);
+                                // printf("%s\n", search_feedback);
+
+                                cJSON *root_search = cJSON_Parse(search_feedback);
+                                cJSON *search_type = cJSON_GetObjectItemCaseSensitive(root_search, "type");
+                                char *search_type_rendered = cJSON_Print(search_type);
+                                remove_doublequot(search_type_rendered);
+                                //printf("\ntype: %s\n", search_type_rendered);
+                                if (strcmp(search_type_rendered, "Error") == 0) {
+                                    //printf("\nerror\n");
+                                    cJSON *search_message = cJSON_GetObjectItemCaseSensitive(root_search, "message");
+                                    char *search_message_rendered = cJSON_Print(search_message);
+                                    remove_doublequot(search_message_rendered);
+                                    printf("\n%s\n", search_message_rendered);
+                                } else {
+
+                                    cJSON *search_message = cJSON_GetObjectItemCaseSensitive(root_search, "message");
+                                    char *search_message_rendered = cJSON_Print(search_message);
+                                    //printf("\n%s\n", search_message_rendered);
+
+                                    cJSON *root_username_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_username_in = cJSON_GetObjectItemCaseSensitive(root_username_search,
+                                                                                                 "username");
+                                    char *search_username_rendered = cJSON_Print(search_username_in);
+                                    remove_doublequot(search_username_rendered);
+
+                                    cJSON *root_bio_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_bio = cJSON_GetObjectItemCaseSensitive(root_bio_search, "bio");
+                                    char *search_bio_rendered = cJSON_Print(search_bio);
+                                    remove_doublequot(search_bio_rendered);
+
+                                    cJSON *root_followers_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_followers = cJSON_GetObjectItemCaseSensitive(root_followers_search,
+                                                                                               "numberOfFollowers");
+                                    char *search_followers_rendered = cJSON_Print(search_followers);
+
+                                    cJSON *root_followings_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_followings = cJSON_GetObjectItemCaseSensitive(root_followings_search,
+                                                                                                "numberOfFollowings");
+                                    char *search_followings_rendered = cJSON_Print(search_followings);
+
+                                    cJSON *root_status_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_status = cJSON_GetObjectItemCaseSensitive(root_status_search,
+                                                                                            "followStatus");
+                                    char *search_status_rendered = cJSON_Print(search_status);
+                                    remove_doublequot(search_status_rendered);
+
+                                    cJSON *root_tweets_search = cJSON_Parse(search_message_rendered);
+                                    cJSON *search_tweets = cJSON_GetObjectItemCaseSensitive(root_tweets_search,
+                                                                                            "allTweets");
+                                    //char * search_tweets_rendered = cJSON_Print(search_tweets);
+                                    int number_of_tweets_search = cJSON_GetArraySize(search_tweets);
+
+
+                                    printf("\nusername: %s\n", search_username_rendered);
+                                    printf("\nbio: %s\n", search_bio_rendered);
+                                    printf("\nnumber of followers: %s\n", search_followers_rendered);
+                                    printf("\nnumber of followings: %s\n", search_followings_rendered);
+                                    printf("\nfollow status: %s\n", search_status_rendered);
+                                    //printf("\nall tweets: %s\n", search_tweets_rendered);
+                                    printf("\nnumber of tweets: %d\n", number_of_tweets_search);
+                                    printf("-------------------------------------------");
+
+                                    for (int w = 0; w < number_of_tweets_search; w++) {
+                                        cJSON *each_tweet_search = cJSON_GetArrayItem(search_tweets, w);
+                                        char *each_tweet_rendered_search = cJSON_Print(each_tweet_search);
+                                        //printf("\ntweet %d is: %s\n", k, each_tweet_rendered_search);
+
+                                        cJSON *root_tweets_id_search = cJSON_Parse(each_tweet_rendered_search);
+                                        cJSON *search_tweets_id = cJSON_GetObjectItemCaseSensitive(
+                                                root_tweets_id_search,
+                                                "id");
+                                        char *search_tweets_id_rendered = cJSON_Print(search_tweets_id);
+
+                                        cJSON *root_tweets_author_search = cJSON_Parse(each_tweet_rendered_search);
+                                        cJSON *search_tweets_author = cJSON_GetObjectItemCaseSensitive(
+                                                root_tweets_author_search, "author");
+                                        char *search_tweets_author_rendered = cJSON_Print(search_tweets_author);
+                                        remove_doublequot(search_tweets_author_rendered);
+
+                                        cJSON *root_tweets_content_search = cJSON_Parse(each_tweet_rendered_search);
+                                        cJSON *search_tweets_content = cJSON_GetObjectItemCaseSensitive(
+                                                root_tweets_content_search, "content");
+                                        char *search_tweets_content_rendered = cJSON_Print(search_tweets_content);
+                                        remove_doublequot(search_tweets_content_rendered);
+
+                                        cJSON *root_tweets_comments_search = cJSON_Parse(each_tweet_rendered_search);
+                                        cJSON *search_tweets_comments = cJSON_GetObjectItemCaseSensitive(
+                                                root_tweets_comments_search, "comments");
+                                        //char * search_tweets_comments_rendered = cJSON_Print(search_tweets_comments);
+
+                                        int number_of_comments_search = cJSON_GetArraySize(search_tweets_comments);
+
+                                        cJSON *root_tweets_likes_search = cJSON_Parse(each_tweet_rendered_search);
+                                        cJSON *search_tweets_likes = cJSON_GetObjectItemCaseSensitive(
+                                                root_tweets_likes_search, "likes");
+                                        char *search_tweets_likes_rendered = cJSON_Print(search_tweets_likes);
+
+                                        printf("\ntweet id: %s\n", search_tweets_id_rendered);
+                                        printf("\nauthor: %s\n", search_tweets_author_rendered);
+                                        printf("\ntweet: %s\n", search_tweets_content_rendered);
+                                        printf("\nlikes: %s\n", search_tweets_likes_rendered);
+                                        printf("\nnumber of comments: %d\n", number_of_comments_search);
+                                        printf("-------------------------------------------");
+                                    }
+                                    if (strcmp(search_status_rendered, "NotFollowed") == 0) {
+                                        print_follow();
+                                        int follow_key;
+                                        scanf("%d", &follow_key);
+                                        if (follow_key == 1) {
+                                            char *follow_feedback;
+                                            char to_send_follow[1000] = "follow ";
+                                            strcat(to_send_follow, token);
+                                            strcat(to_send_follow, middle);
+                                            strcat(to_send_follow, search_username);
+                                            strcat(to_send_follow, "\n");
+                                            follow_feedback = send_data(to_send_follow);
+                                            //printf("%s\n", follow_feedback);
+                                            cJSON *follow_search = cJSON_Parse(follow_feedback);
+                                            cJSON *follow_type = cJSON_GetObjectItemCaseSensitive(follow_search,
+                                                                                                  "type");
+                                            char *follow_type_rendered = cJSON_Print(follow_type);
+                                            remove_doublequot(follow_type_rendered);
+                                            //printf("\n%s\n", follow_type_rendered);
+                                            if (strcmp(follow_type_rendered, "Successful") == 0) {
+                                                printf("\nyou successfully follow %s\nnow you can share your tweets together ;)\n",
+                                                       search_username);
+                                            } else {
+                                                printf("\nsomething went wrong\n");
+                                            }
+                                        }
+
                                     } else {
-                                        printf("\nsomething went wrong\n");
+                                        print_unfollow();
+                                        int unfollow_key;
+                                        scanf("%d", &unfollow_key);
+                                        if (unfollow_key == 1) {
+                                            char *unfollow_feedback;
+                                            char to_send_unfollow[1000] = "unfollow ";
+                                            strcat(to_send_unfollow, token);
+                                            strcat(to_send_unfollow, middle);
+                                            strcat(to_send_unfollow, search_username);
+                                            strcat(to_send_unfollow, "\n");
+                                            unfollow_feedback = send_data(to_send_unfollow);
+                                            //printf("%s\n", unfollow_feedback);
+                                            cJSON *unfollow_search = cJSON_Parse(unfollow_feedback);
+                                            cJSON *unfollow_type = cJSON_GetObjectItemCaseSensitive(unfollow_search,
+                                                                                                    "type");
+                                            char *unfollow_type_rendered = cJSON_Print(unfollow_type);
+                                            remove_doublequot(unfollow_type_rendered);
+                                            //printf("\n%s\n", unfollow_type_rendered);
+                                            if (strcmp(unfollow_type_rendered, "Successful") == 0) {
+                                                printf("\nyou successfully unfollow %s\ngod bless him...\n",
+                                                       search_username);
+                                            } else {
+                                                printf("\nsomething went wrong\n");
+                                            }
+                                        }
                                     }
                                 }
+                            }
+                            else if (search_key == 2) {
+                                printf("\nenter what you want to search:\n");
+                                char * string_to_search = calloc(1000, 1);
+                                getchar();
+                                gets(string_to_search);
+                                //printf("%s", string_to_search);
 
-                            } else {
-                                print_unfollow();
-                                int unfollow_key;
-                                scanf("%d",&unfollow_key);
-                                if (unfollow_key == 1) {
-                                    char * unfollow_feedback;
-                                    char to_send_unfollow[1000] = "unfollow ";
-                                    strcat(to_send_unfollow, token);
-                                    strcat(to_send_unfollow, middle);
-                                    strcat(to_send_unfollow, search_username);
-                                    strcat(to_send_unfollow, "\n");
-                                    unfollow_feedback = send_data(to_send_unfollow);
-                                    //printf("%s\n", unfollow_feedback);
-                                    cJSON * unfollow_search = cJSON_Parse(unfollow_feedback);
-                                    cJSON * unfollow_type = cJSON_GetObjectItemCaseSensitive(unfollow_search, "type");
-                                    char * unfollow_type_rendered = cJSON_Print(unfollow_type);
-                                    remove_doublequot(unfollow_type_rendered);
-                                    //printf("\n%s\n", unfollow_type_rendered);
-                                    if (strcmp(unfollow_type_rendered,"Successful") == 0) {
-                                        printf("\nyou successfully unfollow %s\ngod bless him...\n",search_username);
-                                    } else {
-                                        printf("\nsomething went wrong\n");
+
+                                char *tweet_search_feedback;
+                                char to_send_tweet_search[1000] = "tweet_search ";
+                                strcat(to_send_tweet_search, token);
+                                strcat(to_send_tweet_search, middle);
+                                strcat(to_send_tweet_search, string_to_search);
+                                strcat(to_send_tweet_search, "\n");
+                                tweet_search_feedback = send_data(to_send_tweet_search);
+                                //printf("%s\n", tweet_search_feedback);
+
+                                cJSON *root_tweet_search = cJSON_Parse(tweet_search_feedback);
+                                cJSON *tweet_search_type = cJSON_GetObjectItemCaseSensitive(root_tweet_search, "type");
+                                char *tweet_search_type_rendered = cJSON_Print(tweet_search_type);
+                                remove_doublequot(tweet_search_type_rendered);
+                                //printf("\ntype: %s\n", tweet_search_type_rendered);
+
+                                if (strcmp(tweet_search_type_rendered, "Error") == 0) {
+                                    //printf("\nerror\n");
+                                    cJSON *tweet_search_message = cJSON_GetObjectItemCaseSensitive(root_tweet_search, "message");
+                                    char *tweet_search_message_rendered = cJSON_Print(tweet_search_message);
+                                    remove_doublequot(tweet_search_message_rendered);
+                                    printf("\n%s\n", tweet_search_message_rendered);
+                                } else {
+
+                                    cJSON *tweet_search_message = cJSON_GetObjectItemCaseSensitive(root_tweet_search, "message");
+                                    char *tweet_search_message_rendered = cJSON_Print(tweet_search_message);
+                                    //printf("\n%s\n", tweet_search_message_rendered);
+
+                                    int number_of_tweets_search = cJSON_GetArraySize(tweet_search_message);
+
+                                    printf("-------------------------------------------");
+                                    for (int x = 0; x < number_of_tweets_search; x++) {
+                                        cJSON * each_tweet_tweet_search = cJSON_GetArrayItem(tweet_search_message, x);
+                                        char * each_tweet_rendered_tweet_search = cJSON_Print(each_tweet_tweet_search);
+                                        //printf("\ntweet %d is: %s\n", x, each_tweet_rendered_tweet_search);
+
+                                        cJSON * root_tweets_id_tweet_search = cJSON_Parse(each_tweet_rendered_tweet_search);
+                                        cJSON * tweet_search_tweets_id = cJSON_GetObjectItemCaseSensitive(root_tweets_id_tweet_search, "id");
+                                        char * refresh_tweets_id_rendered = cJSON_Print(tweet_search_tweets_id);
+
+                                        cJSON * root_tweets_author_search_tweet = cJSON_Parse(each_tweet_rendered_tweet_search);
+                                        cJSON * refresh_tweets_author = cJSON_GetObjectItemCaseSensitive(root_tweets_author_search_tweet, "author");
+                                        char * refresh_tweets_author_rendered = cJSON_Print(refresh_tweets_author);
+                                        remove_doublequot(refresh_tweets_author_rendered);
+
+                                        cJSON * root_tweets_content_refresh = cJSON_Parse(each_tweet_rendered_tweet_search);
+                                        cJSON * refresh_tweets_content = cJSON_GetObjectItemCaseSensitive(root_tweets_content_refresh, "content");
+                                        char * refresh_tweets_content_rendered = cJSON_Print(refresh_tweets_content);
+                                        remove_doublequot(refresh_tweets_content_rendered);
+
+                                        cJSON * root_tweets_comments_refresh = cJSON_Parse(each_tweet_rendered_tweet_search);
+                                        cJSON * refresh_tweets_comments = cJSON_GetObjectItemCaseSensitive(root_tweets_comments_refresh, "comments");
+                                        //char * refresh_tweets_comments_rendered = cJSON_Print(refresh_tweets_comments);
+
+                                        int number_of_comments_refresh = cJSON_GetArraySize(refresh_tweets_comments);
+
+                                        cJSON * root_tweets_likes_refresh = cJSON_Parse(each_tweet_rendered_tweet_search);
+                                        cJSON * refresh_tweets_likes = cJSON_GetObjectItemCaseSensitive(root_tweets_likes_refresh,"likes");
+                                        char * refresh_tweets_likes_rendered = cJSON_Print(refresh_tweets_likes);
+
+                                        printf("\ntweet id: %s\n", refresh_tweets_id_rendered);
+                                        printf("\nauthor: %s\n", refresh_tweets_author_rendered);
+                                        printf("\ntweet: %s\n", refresh_tweets_content_rendered);
+                                        printf("\nlikes: %s\n", refresh_tweets_likes_rendered);
+                                        printf("\nnumber of comments: %d\n", number_of_comments_refresh);
+                                        printf("-------------------------------------------");
                                     }
+
                                 }
                             }
                         }
@@ -419,7 +522,7 @@ int main() {
 
                     else if (command == 3) {
                         //printf("\n%s\n", token);
-                        char * profile_feedback;
+                        char * profile_feedback = (char *)calloc(10000, 1);
                         char to_send_profile[1000] = "profile ";
                         strcat(to_send_profile, token);
                         strcat(to_send_profile, "\n");
@@ -521,7 +624,7 @@ int main() {
                             int personal_key;
                             print_Personal();
                             scanf("%d", &personal_key);
-                            if (personal_key == 3) {
+                            if (personal_key == 4) {
                                 break;
                             }
                             else if (personal_key == 1) {
@@ -577,6 +680,26 @@ int main() {
                                 remove_doublequot(change_password_message_rendered);
                                 printf("\n%s\n", change_password_message_rendered);
                             }
+                            else if (personal_key == 3) {
+                                printf("\nenter the tweet id:\n");
+                                char tweet_id_to_delete[100];
+                                scanf("%s", tweet_id_to_delete);
+                                char * delete_feedback;
+                                char to_send_delete[1000] = "delete ";
+                                strcat(to_send_delete, token);
+                                strcat(to_send_delete, middle);
+                                strcat(to_send_delete, tweet_id_to_delete);
+                                strcat(to_send_delete, "\n");
+                                delete_feedback = send_data(to_send_delete);
+
+                                cJSON * root_delete = cJSON_Parse(delete_feedback);
+                                cJSON * delete_message = cJSON_GetObjectItemCaseSensitive(root_delete, "message");
+                                char * delete_message_rendered = cJSON_Print(delete_message);
+                                remove_doublequot(delete_message_rendered);
+                                printf("\n%s\n", delete_message_rendered);
+
+
+                            }
                         }
                     }
 
@@ -602,7 +725,9 @@ int main() {
                     }
                 }
             } else {
-                printf("\nyou are logged in or something went wrong.\n");
+                char * login_message_rendered = cJSON_Print(message);
+                remove_doublequot(login_message_rendered);
+                printf("\n%s\n", login_message_rendered);
             }
 
         }
@@ -669,19 +794,20 @@ int initialize(int port) {
 }
 
 char *send_data(char *data) {
-    char *buffer = malloc(1000);
-    memset(buffer, 0, 1000);
+    char *buffer = malloc(10000);
+    memset(buffer, 0, 10000);
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == INVALID_SOCKET) {
         return buffer;
     }
+
     int can_connect = connect(client_socket, (struct sockaddr *) &server, sizeof(server));
     if (can_connect != 0) {
         printf("connection failed");
         return buffer;
     }
     send(client_socket, data, strlen(data), 0);
-    recv(client_socket, buffer, 999, 0);
+    recv(client_socket, buffer, 9999, 0);
     closesocket(client_socket);
     return buffer;
 }
@@ -718,7 +844,7 @@ void print_timeline () {
 }
 
 void print_Personal () {
-    printf("\n1.set bio\n2.change password\n3.back\nplease enter the number of command :\n");
+    printf("\n1.set bio\n2.change password\n3.delete tweet\n4.back\nplease enter the number of command :\n");
 }
 
 void print_follow () {
@@ -731,6 +857,10 @@ void print_unfollow () {
 
 void print_like () {
     printf("\n1.like a tweet\n2.comment for a tweet\n3.show comments\n4.back\nplease enter the number of command :\n");
+}
+
+void print_search () {
+    printf("\n1.search user\n2.search in tweets\n3.back\nplease enter the number of command :\n");
 }
 
 

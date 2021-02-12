@@ -3,7 +3,8 @@
 	"author":	"shayan",
 	"content":	"sup bitches",
 	"comments":	{
+		"amirreza":	"khi khi dawsh ghih ghih"
 	},
-	"likes":	0,
-	"users_liked":	[]
+	"likes":	1,
+	"users_liked":	["amirreza"]
 }

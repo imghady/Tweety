@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #define PORT 12345
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 100000
 
 struct sockaddr_in server;
 
@@ -33,8 +33,8 @@ int main() {
     SOCKET server_fd, client_fd;
     struct sockaddr_in server, client;
     int port = PORT, err;
-    char command[20];
-    char *arguments = calloc(100, 1);
+    char command[200];
+    char *arguments = calloc(10000, 1);
 
     err = WSAStartup(MAKEWORD(2,2), &wsadata);
     if (err != 0)
@@ -72,7 +72,7 @@ int main() {
         bool keepLooping = true;
         do
         {
-            char *buf = calloc(100, 1);
+            char *buf = calloc(10000, 1);
             int read = recv(client_fd, buf, BUFFER_SIZE, 0);
 
             if (read == 0)
@@ -82,7 +82,7 @@ int main() {
             {
                 err = WSAGetLastError();
                 if ((err != WSAENOTCONN) && (err != WSAECONNABORTED) && (err == WSAECONNRESET))
-                    printf("Error nella lettura dal client", &err);
+                    printf("\nError in reading from the client\n", &err);
                 break;
             }
             printf("command is: %s\n", buf);
@@ -172,6 +172,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, login_response);
 
             }
+
             else if (strcmp(command, "signup") == 0) {
                 cJSON *signup_root;
                 signup_root = cJSON_CreateObject();
@@ -240,6 +241,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, signup_response);
 
             }
+
             else if (strcmp(command, "send") == 0) {
                 char tweet[1000] = {'\0'};
                 char user_token[1000] = {'\0'};
@@ -341,6 +343,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, new_tweet_response);
 
             }
+
             else if (strcmp(command, "refresh") == 0) {
                 char user_token[1010] = {'\0'};
                 char *login_line = calloc(1017, 1);
@@ -424,27 +427,28 @@ int main() {
 
                 int sent_status = sendData(&client_fd, &client, refresh_response);
             }
+
             else if (strcmp(command, "like") == 0) {
                 char user_token[1000] = {'\0'};
                 char tweet_id[1000] = {'\0'};
                 char *like_line = calloc(1000, 1);
                 strcpy(like_line, buf);
-                char *signup_token2 = strtok(like_line, delim);
-                signup_token2 = strtok(NULL, delim);
-                if (signup_token2 == NULL) {
+                char *like_token2 = strtok(like_line, delim);
+                like_token2 = strtok(NULL, delim);
+                if (like_token2 == NULL) {
                     char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
                     int sent_status = sendData(&client_fd, &client, change_response);
                     continue;
                 }
-                strcpy(user_token, signup_token2);
+                strcpy(user_token, like_token2);
                 user_token[strlen(user_token) - 1] = '\0';
-                signup_token2 = strtok(NULL, delim);
-                if (signup_token2 == NULL) {
+                like_token2 = strtok(NULL, delim);
+                if (like_token2 == NULL) {
                     char *change_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
                     int sent_status = sendData(&client_fd, &client, change_response);
                     continue;
                 }
-                strcpy(tweet_id, signup_token2);
+                strcpy(tweet_id, like_token2);
                 tweet_id[strlen(tweet_id)] = '\0';
 
                 char *this_user = get_user_by_token(user_token);
@@ -458,8 +462,9 @@ int main() {
                 char user_file_content[10000] = {'\0'};
                 char user_object[10000] = {'\0'};
 
-                while (fgets(user_file_content, 10000, fp) != NULL)
+                while (fgets(user_file_content, 10000, fp) != NULL) {
                     strcat(user_object, user_file_content);
+                }
 
                 fclose(fp);
 
@@ -502,6 +507,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, like_response);
 
             }
+
             else if (strcmp(command, "comment") == 0) {
                 char user_token[1000] = {'\0'};
                 char tweet_id[1000] = {'\0'};
@@ -572,6 +578,7 @@ int main() {
 
                 int sent_status = sendData(&client_fd, &client, comment_response);
             }
+
             else if (strcmp(command, "search") == 0) {
                 char search_user_token[1000] = {'\0'};
                 char username_for_search[1000] = {'\0'};
@@ -690,6 +697,7 @@ int main() {
                 }
 
             }
+
             else if (strcmp(command, "follow") == 0) {
                 char user_token[1000] = {'\0'};
                 char intended_user[1000] = {'\0'};
@@ -763,6 +771,7 @@ int main() {
                 sprintf(follow_response, "{\"type\": \"Successful\",\"message\":\"You are now following %\"}", intended_user);
                 int sent_status = sendData(&client_fd, &client, follow_response);
             }
+
             else if (strcmp(command, "unfollow") == 0) {
                 char user_token[1000] = {'\0'};
                 char intended_user[1000] = {'\0'};
@@ -856,6 +865,7 @@ int main() {
                 printf("%s", unfollow_response);
                 int sent_status = sendData(&client_fd, &client, unfollow_response);
             }
+
             else if (strcmp(command, "set") == 0) {
                 char bio[1000] = {'\0'};
                 char user_token[1000] = {'\0'};
@@ -917,6 +927,7 @@ int main() {
                 int sent_status = sendData(&client_fd, &client, logout_response);
 
             }
+
             else if (strcmp(command, "logout") == 0) {
                 char user_token[1010] = {'\0'};
                 char *login_line = calloc(1017, 1);
@@ -935,9 +946,10 @@ int main() {
                 char *logout_response = "{\"type\": \"Successful\",\"message\":\"\"}";
                 int sent_status = sendData(&client_fd, &client, logout_response);
             }
+
             else if (strcmp(command, "profile") == 0) {
-                char profile_user_token[1000] = {'\0'};
-                char *signup_line = calloc(1000, 1);
+                char profile_user_token[10000] = {'\0'};
+                char *signup_line = calloc(10000, 1);
                 strcpy(signup_line, buf);
                 char *signup_token2 = strtok(signup_line, delim);
                 signup_token2 = strtok(NULL, delim);
@@ -1023,6 +1035,7 @@ int main() {
                     int sent_status = sendData(&client_fd, &client, search_response);
                 }
             }
+
             else if (strcmp(command, "change") == 0) {
                 char user_token[1000] = {'\0'};
                 char current_password[1000] = {'\0'};
@@ -1098,6 +1111,172 @@ int main() {
                     }
                 }
 
+            }
+
+            else if (strcmp(command, "delete") == 0) {
+                char user_token[1000] = {'\0'};
+                char tweet_id[1000] = {'\0'};
+                char *delete_line = calloc(1000, 1);
+                strcpy(delete_line, buf);
+                char *delete_token2 = strtok(delete_line, delim);
+                delete_token2 = strtok(NULL, delim);
+                if (delete_token2 == NULL) {
+                    char *delete_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, delete_response);
+                    continue;
+                }
+                strcpy(user_token, delete_token2);
+                user_token[strlen(user_token) - 1] = '\0';
+                delete_token2 = strtok(NULL, delim);
+                if (delete_token2 == NULL) {
+                    char *delete_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, delete_response);
+                    continue;
+                }
+                strcpy(tweet_id, delete_token2);
+                tweet_id[strlen(tweet_id)] = '\0';
+
+                char *this_user = get_user_by_token(user_token);
+
+
+                char *tweet_file = calloc(1000, 1);
+                sprintf(tweet_file, "Resources/Tweets/%s.tweet.json", tweet_id);
+
+
+                FILE *fp = fopen(tweet_file, "r");
+                if (fp == NULL) {
+                    char *delete_response = "{\"type\": \"Error\",\"message\":\"This tweet doesn't exists.\"}";
+                    int sent_status = sendData(&client_fd, &client, delete_response);
+                } else {
+
+                    char user_file_content[10000] = {'\0'};
+                    char user_object[10000] = {'\0'};
+
+                    while (fgets(user_file_content, 10000, fp) != NULL) {
+                        strcat(user_object, user_file_content);
+                    }
+
+                    fclose(fp);
+
+                    cJSON *tweet_data = cJSON_Parse(user_object);
+                    cJSON *author = cJSON_GetObjectItem(tweet_data, "author");
+                    char *author_rendered = cJSON_GetStringValue(author);
+                    if (strcmp(author_rendered, this_user) == 0) {
+                        int remove_response = remove(tweet_file);
+                        printf("\nremove response : %d\n", remove_response);
+                        if (remove_response == 0) {
+                            char *this_user_filename = calloc(1000, 1);
+                            sprintf(this_user_filename, "Resources/Users/%s.user.json", this_user);
+
+                            FILE *user_file = fopen(this_user_filename, "r");
+                            char this_user_file_content[10000] = {'\0'};
+                            char this_user_object[10000] = {'\0'};
+
+
+                            while (fgets(this_user_file_content, 10000, user_file) != NULL)
+                                strcat(this_user_object, this_user_file_content);
+
+                            fclose(user_file);
+
+                            cJSON * user_data = cJSON_Parse(this_user_object);
+                            cJSON * personal_tweets = cJSON_GetObjectItem(user_data, "personalTweets");
+
+                            int i = 0;
+                            for (i = 0; i < cJSON_GetArraySize(personal_tweets); i++) {
+                                cJSON * this_tweet = cJSON_GetArrayItem(personal_tweets, i);
+                                char * this_tweet_id = calloc(1000, 1);
+                                int this_tweet_number = (int)cJSON_GetNumberValue(this_tweet);
+                                sprintf(this_tweet_id, "%d", this_tweet_number);
+                                if (strcmp(this_tweet_id, tweet_id) == 0) {
+                                    break;
+                                }
+                            }
+                            printf("\n%d", i);
+                            cJSON_DeleteItemFromArray(personal_tweets, i);
+
+                            char *user_string = cJSON_Print(user_data);
+                            FILE *this_user_file;
+                            this_user_file = fopen(this_user_filename, "w");
+                            fprintf(this_user_file, "%s", user_string);
+                            fclose(this_user_file);
+
+                            char *delete_response = "{\"type\": \"Error\",\"message\":\"Tweet deleted successfully.\"}";
+                            int sent_status = sendData(&client_fd, &client, delete_response);
+                        }
+                    } else {
+                        char *delete_response = "{\"type\": \"Error\",\"message\":\"This tweet doesn't belong to you.\"}";
+                        int sent_status = sendData(&client_fd, &client, delete_response);
+                    }
+                }
+            }
+
+            else if (strcmp(command, "tweet_search") == 0) {
+                char tweet_search_user_token[1000] = {'\0'};
+                char string_for_search[1000] = {'\0'};
+                char *tweet_search_line = calloc(1000, 1);
+                strcpy(tweet_search_line, buf);
+                char *tweet_search_token2 = strtok(tweet_search_line, delim);
+                tweet_search_token2 = strtok(NULL, delim);
+                if (tweet_search_token2 == NULL) {
+                    char *tweet_search_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, tweet_search_response);
+                    continue;
+                }
+                strcpy(tweet_search_user_token, tweet_search_token2);
+                tweet_search_user_token[strlen(tweet_search_user_token) - 1] = '\0';
+                tweet_search_token2 = strtok(NULL, delim);
+                if (tweet_search_token2 == NULL) {
+                    char *tweet_search_response = "{\"type\": \"Error\",\"message\":\"Problem in sent parameters.\"}";
+                    int sent_status = sendData(&client_fd, &client, tweet_search_response);
+                    continue;
+                }
+                strcpy(string_for_search, "#");
+                strcat(string_for_search, tweet_search_token2);
+                string_for_search[strlen(string_for_search)] = '\0';
+
+                FILE * last_tweet_number_file = fopen("Resources/last_tweet_number.txt", "r");
+                int last_tweet_number;
+                fscanf(last_tweet_number_file, "%d", &last_tweet_number);
+
+                cJSON * searched_tweets = cJSON_CreateArray();
+                FILE * tweet_file;
+                char * each_tweet_file_name = calloc(10000, 1);
+                for (int p = 1; p <= last_tweet_number; p++) {
+                    sprintf(each_tweet_file_name, "Resources/Tweets/%d.tweet.json", p);
+                    tweet_file = fopen(each_tweet_file_name, "r");
+                    if (tweet_file != NULL){
+                        char tweet_file_content[10000] = {'\0'};
+                        char tweet_object[10000] = {'\0'};
+
+                        while (fgets(tweet_file_content, 10000, tweet_file) != NULL) {
+                            strcat(tweet_object, tweet_file_content);
+                        }
+
+                        fclose(tweet_file);
+
+                        cJSON * tweet_data = cJSON_Parse(tweet_object);
+                        cJSON * content_value = cJSON_GetObjectItem(tweet_data, "content");
+                        char  * each_content = cJSON_GetStringValue(content_value);
+                        if (strstr(each_content, string_for_search) != NULL) {
+                            cJSON_AddItemToArray(searched_tweets, tweet_data);
+
+                        }
+                        tweet_data = NULL;
+
+                    }
+
+                }
+                char  * searched_tweet_rendered = cJSON_Print(searched_tweets);
+                removeChar(searched_tweet_rendered, '\n');
+                removeChar(searched_tweet_rendered, '\t');
+                char  *tweet_search_response = calloc(10000, 1);
+                if (strcmp(searched_tweet_rendered, "[]") == 0){
+                    tweet_search_response = "{\"type\": \"Error\",\"message\":\"The search has no result.\"}";
+                    int sent_status = sendData(&client_fd, &client, tweet_search_response);
+                } else {
+                    sprintf(tweet_search_response, "{\"type\": \"Successful\",\"message\":%s}", searched_tweet_rendered);
+                    int sent_status = sendData(&client_fd, &client, tweet_search_response);
+                }
             }
             else {
                 char *change_response = "{\"type\": \"Error\",\"message\":\"This command is invalid.\"}";
